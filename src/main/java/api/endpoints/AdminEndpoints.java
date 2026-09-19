@@ -2,12 +2,13 @@ package api.endpoints;
 
 import api.payload.*;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
+import api.utils.*;
 
 public class AdminEndpoints {
 
+    Constants constants = new Constants();
 
     public static Response createAdmin(AdminPayload payload) {
         Response response = given()
@@ -25,7 +26,7 @@ public class AdminEndpoints {
 
     public static Response getAdminById(String adminId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(Constants.TOKEN()))
                 .pathParam("adminId", adminId)
                 .when()
                 .get(Routes.GET_ADMIN)
