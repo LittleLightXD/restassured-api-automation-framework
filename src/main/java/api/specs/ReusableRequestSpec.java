@@ -5,7 +5,6 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import api.utils.ConfigReader;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,21 +13,16 @@ import java.io.PrintStream;
 public class ReusableRequestSpec {
 
 
-    public static RequestSpecification buildRequestSpec() {
-        ConfigReader config = ConfigReader.getInstance();
+  public static RequestSpecification buildRequestSpec() {
 
-        RequestSpecBuilder builder = new RequestSpecBuilder();
+    RequestSpecBuilder builder = new RequestSpecBuilder();
 
-        builder.setBaseUri(config.getBaseURL())
-               .setContentType(ContentType.JSON)
-               .setAccept(ContentType.JSON);
+    builder.setBaseUri("https://www.shoppersstack.com/shopping")
+           .setContentType(ContentType.JSON)
+           .setAccept(ContentType.JSON);
 
-        if (config.isLoggingEnabled()) {
-            addLogging(builder);
-        }
-
-        return builder.build();
-    }
+    return builder.build();
+}
 
 
     public static RequestSpecification buildAuthenticatedRequestSpec(String token) {
@@ -51,16 +45,14 @@ public class ReusableRequestSpec {
 
 
     public static RequestSpecification buildRequestSpecWithBaseURI(String baseURI) {
-        RequestSpecBuilder builder = new RequestSpecBuilder();
 
-        builder.setBaseUri(baseURI)
-               .setContentType(ContentType.JSON)
-               .setAccept(ContentType.JSON);
+    RequestSpecBuilder builder = new RequestSpecBuilder();
 
-        ConfigReader config = ConfigReader.getInstance();
-        if (config.isLoggingEnabled()) {
-            addLogging(builder);
-        }
+    builder.setBaseUri(baseURI)
+           .setContentType(ContentType.JSON)
+           .setAccept(ContentType.JSON);
+
+    addLogging(builder);
 
         return builder.build();
     }

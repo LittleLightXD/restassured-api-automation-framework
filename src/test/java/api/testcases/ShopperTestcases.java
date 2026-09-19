@@ -1,24 +1,19 @@
 package api.testcases;
 
-import api.base.BaseTest;
-import api.dataproviders.ShopperDataProvider;
 import api.endpoints.ShopperEndpoints;
-import api.logging.CustomLogger;
 import api.payload.ShopperPayload;
 import api.utils.FakeDataGenerator;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ShopperTestcases extends BaseTest {
+public class ShopperTestcases {
 
-    CustomLogger logger = new CustomLogger();
 
 
 
     @Test(priority = 1, description = "Create shopper with valid data")
     public void createShopperWithValidDataTest() {
-        logger.startTestCase("createShopperWithValidDataTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -31,17 +26,14 @@ public class ShopperTestcases extends BaseTest {
         payload.setDateOfBirth("1990-01-15");
 
         Response response = ShopperEndpoints.createShopper(payload);
-        logger.logAPIResponse(response.getStatusCode(), response.getBody().asString());
 
         Assert.assertEquals(response.getStatusCode(), 201);
         Assert.assertNotNull(response.jsonPath().getString("shopperId"));
 
-        logger.endTestCase("createShopperWithValidDataTest");
     }
 
     @Test(priority = 2, description = "Get shopper by ID")
     public void getShopperByIdTest() {
-        logger.startTestCase("getShopperByIdTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -57,12 +49,10 @@ public class ShopperTestcases extends BaseTest {
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("shopperId"), shopperId);
 
-        logger.endTestCase("getShopperByIdTest");
     }
 
     @Test(priority = 3, description = "Update shopper profile")
     public void updateShopperTest() {
-        logger.startTestCase("updateShopperTest");
 
         ShopperPayload createPayload = new ShopperPayload();
         createPayload.setFirstName(FakeDataGenerator.getFirstName());
@@ -83,12 +73,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 200);
 
-        logger.endTestCase("updateShopperTest");
     }
 
     @Test(priority = 4, description = "Add address to shopper account")
     public void addShopperAddressTest() {
-        logger.startTestCase("addShopperAddressTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -112,12 +100,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 201);
 
-        logger.endTestCase("addShopperAddressTest");
     }
 
     @Test(priority = 5, description = "Add items to wishlist")
     public void addToWishlistTest() {
-        logger.startTestCase("addToWishlistTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -132,12 +118,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 201);
 
-        logger.endTestCase("addToWishlistTest");
     }
 
     @Test(priority = 6, description = "Add items to cart")
     public void addToCartTest() {
-        logger.startTestCase("addToCartTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -152,12 +136,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 201);
 
-        logger.endTestCase("addToCartTest");
     }
 
     @Test(priority = 7, description = "Get shopper cart")
     public void getCartTest() {
-        logger.startTestCase("getCartTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -172,15 +154,13 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 200);
 
-        logger.endTestCase("getCartTest");
     }
 
 
 
-    @Test(priority = 10, dataProvider = "validShopperData", dataProviderClass = ShopperDataProvider.class,
+    @Test(priority = 10, dataProvider = "validShopperData",
             description = "Create shopper with data provider")
     public void createShopperDataDrivenTest(String firstName, String lastName, String email, String phone) {
-        logger.startTestCase("createShopperDataDrivenTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(firstName);
@@ -194,14 +174,12 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 201);
 
-        logger.endTestCase("createShopperDataDrivenTest");
     }
 
 
 
     @Test(priority = 20, description = "Create shopper with invalid email")
     public void createShopperWithInvalidEmailTest() {
-        logger.startTestCase("createShopperWithInvalidEmailTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -215,12 +193,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
-        logger.endTestCase("createShopperWithInvalidEmailTest");
     }
 
     @Test(priority = 21, description = "Create shopper with missing required fields")
     public void createShopperWithMissingFieldsTest() {
-        logger.startTestCase("createShopperWithMissingFieldsTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -232,23 +208,19 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
-        logger.endTestCase("createShopperWithMissingFieldsTest");
     }
 
     @Test(priority = 22, description = "Get shopper with invalid ID")
     public void getShopperWithInvalidIdTest() {
-        logger.startTestCase("getShopperWithInvalidIdTest");
 
         Response response = ShopperEndpoints.getShopperById("invalid-shopper-id");
 
         Assert.assertEquals(response.getStatusCode(), 404);
 
-        logger.endTestCase("getShopperWithInvalidIdTest");
     }
 
     @Test(priority = 23, description = "Create shopper with password mismatch")
     public void passwordMismatchTest() {
-        logger.startTestCase("passwordMismatchTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -262,12 +234,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
-        logger.endTestCase("passwordMismatchTest");
     }
 
     @Test(priority = 24, description = "Create shopper with invalid phone")
     public void createShopperWithInvalidPhoneTest() {
-        logger.startTestCase("createShopperWithInvalidPhoneTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -281,12 +251,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
-        logger.endTestCase("createShopperWithInvalidPhoneTest");
     }
 
     @Test(priority = 25, description = "Duplicate email registration")
     public void duplicateShopperEmailTest() {
-        logger.startTestCase("duplicateShopperEmailTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -305,12 +273,10 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 409);
 
-        logger.endTestCase("duplicateShopperEmailTest");
     }
 
     @Test(priority = 26, description = "Delete shopper account")
     public void deleteShopperTest() {
-        logger.startTestCase("deleteShopperTest");
 
         ShopperPayload payload = new ShopperPayload();
         payload.setFirstName(FakeDataGenerator.getFirstName());
@@ -325,19 +291,14 @@ public class ShopperTestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 200);
 
-        logger.endTestCase("deleteShopperTest");
     }
 
     @Test(priority = 27, description = "Unauthorized access to shopper endpoint")
     public void unauthorizedAccessTest() {
-        logger.startTestCase("unauthorizedAccessTest");
-
 
         Response response = ShopperEndpoints.getShopperById("some-id");
 
         Assert.assertEquals(response.getStatusCode(), 401);
-
-        logger.endTestCase("unauthorizedAccessTest");
     }
 }
 

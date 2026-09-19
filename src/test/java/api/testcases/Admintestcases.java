@@ -1,12 +1,8 @@
 package api.testcases;
 
-import api.base.BaseTest;
 import api.endpoints.AdminEndpoints;
 import api.payload.AdminPayload;
-import api.payload.LoginAdminPayload;
 import api.utils.FakeDataGenerator;
-import api.logging.CustomLogger;
-import api.dataproviders.AdminDataProvider;
 import api.specs.ReusableRequestSpec;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -14,13 +10,12 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class Admintestcases extends BaseTest {
+public class Admintestcases {
 
 
 
     @Test(priority = 1, description = "Create admin with valid data")
     public void createAdminWithValidDataTest() {
-        CustomLogger.startTestCase("createAdminWithValidData");
 
 
         AdminPayload payload = new AdminPayload();
@@ -45,13 +40,10 @@ public class Admintestcases extends BaseTest {
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
         Assert.assertNotNull(response.jsonPath().getString("adminId"), "Admin ID should not be null");
 
-        CustomLogger.info("✓ Admin created successfully with ID: " + response.jsonPath().getString("adminId"));
-        CustomLogger.endTestCase("createAdminWithValidData");
     }
 
     @Test(priority = 2, description = "Get admin by valid ID")
     public void getAdminByIdTest() {
-        CustomLogger.startTestCase("getAdminById");
 
 
         AdminPayload payload = new AdminPayload();
@@ -74,13 +66,10 @@ public class Admintestcases extends BaseTest {
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
         Assert.assertEquals(response.jsonPath().getString("adminId"), adminId, "Admin ID should match");
 
-        CustomLogger.info("✓ Admin retrieved successfully");
-        CustomLogger.endTestCase("getAdminById");
     }
 
     @Test(priority = 3, description = "Update admin details")
     public void updateAdminTest() {
-        CustomLogger.startTestCase("updateAdmin");
 
 
         AdminPayload payload = new AdminPayload();
@@ -107,41 +96,12 @@ public class Admintestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
 
-        CustomLogger.info("✓ Admin updated successfully");
-        CustomLogger.endTestCase("updateAdmin");
-    }
-
-    @Test(priority = 4, description = "API Chaining - Create admin and extract ID")
-    public void apiChainingTest() {
-        CustomLogger.startTestCase("apiChaining");
-
-        AdminPayload payload = new AdminPayload();
-        payload.setCity("Pune");
-        payload.setCountry("India");
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setRole("ADMIN");
-        payload.setStatus("ACTIVE");
-
-
-        String adminId = AdminEndpoints.createAdminAndGetId(payload);
-
-
-        Assert.assertNotNull(adminId, "Admin ID should not be null");
-
-        CustomLogger.info("✓ API Chaining successful - Admin ID: " + adminId);
-        CustomLogger.endTestCase("apiChaining");
     }
 
 
-
-    @Test(priority = 5, dataProvider = "validAdminData", dataProviderClass = AdminDataProvider.class,
+    @Test(priority = 5, dataProvider = "validAdminData",
             description = "Create admin with multiple valid datasets")
     public void createAdminDataDrivenTest(String firstName, String lastName, String email, String phone) {
-        CustomLogger.startTestCase("createAdminDataDriven");
 
         AdminPayload payload = new AdminPayload();
         payload.setCity("TestCity");
@@ -157,15 +117,12 @@ public class Admintestcases extends BaseTest {
         Response response = AdminEndpoints.createAdmin(payload);
 
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
-        CustomLogger.info("✓ Admin created for user: " + firstName + " " + lastName);
-        CustomLogger.endTestCase("createAdminDataDriven");
     }
 
 
 
     @Test(priority = 6, description = "Create admin with invalid email format")
     public void createAdminWithInvalidEmailTest() {
-        CustomLogger.startTestCase("createAdminWithInvalidEmail");
 
         AdminPayload payload = new AdminPayload();
         payload.setCity("TestCity");
@@ -183,13 +140,10 @@ public class Admintestcases extends BaseTest {
 
         Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400 for invalid email");
 
-        CustomLogger.info("✓ Invalid email correctly rejected");
-        CustomLogger.endTestCase("createAdminWithInvalidEmail");
     }
 
     @Test(priority = 7, description = "Create admin with missing required fields")
     public void createAdminWithMissingFieldsTest() {
-        CustomLogger.startTestCase("createAdminWithMissingFields");
 
         AdminPayload payload = new AdminPayload();
         payload.setCountry("India");
@@ -205,26 +159,20 @@ public class Admintestcases extends BaseTest {
         Assert.assertTrue(response.getStatusCode() == 400 || response.getStatusCode() == 422,
                 "Expected error status code");
 
-        CustomLogger.info("✓ Missing fields correctly rejected");
-        CustomLogger.endTestCase("createAdminWithMissingFields");
     }
 
     @Test(priority = 8, description = "Get admin with invalid ID")
     public void getAdminWithInvalidIdTest() {
-        CustomLogger.startTestCase("getAdminWithInvalidId");
 
         Response response = AdminEndpoints.getAdminById("invalid-admin-id-12345");
 
 
         Assert.assertEquals(response.getStatusCode(), 404, "Expected status code 404");
 
-        CustomLogger.info("✓ Invalid admin ID correctly returned 404");
-        CustomLogger.endTestCase("getAdminWithInvalidId");
     }
 
     @Test(priority = 9, description = "Duplicate email validation")
     public void duplicateEmailTest() {
-        CustomLogger.startTestCase("duplicateEmail");
 
         String duplicateEmail = FakeDataGenerator.getUniqueEmail();
 
@@ -261,13 +209,10 @@ public class Admintestcases extends BaseTest {
         Assert.assertTrue(response2.getStatusCode() == 409 || response2.getStatusCode() == 400,
                 "Duplicate email should be rejected");
 
-        CustomLogger.info("✓ Duplicate email correctly rejected");
-        CustomLogger.endTestCase("duplicateEmail");
     }
 
     @Test(priority = 10, description = "Unauthorized access without token")
     public void unauthorizedAccessTest() {
-        CustomLogger.startTestCase("unauthorizedAccess");
 
         String adminId = "test-admin-id";
 
@@ -283,7 +228,5 @@ public class Admintestcases extends BaseTest {
                 "An unauthenticated request should return 401");
 
 
-        CustomLogger.info("✓ Token validation test completed");
-        CustomLogger.endTestCase("unauthorizedAccess");
     }
 }

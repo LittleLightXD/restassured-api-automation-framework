@@ -2,7 +2,6 @@ package api.endpoints;
 
 import api.payload.*;
 import api.specs.ReusableRequestSpec;
-import api.specs.ReusableResponseSpec;
 import api.utils.TokenManager;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
@@ -21,17 +20,6 @@ public class AdminEndpoints {
                 .response();
 
         return response;
-    }
-
-
-    public static String createAdminAndGetId(AdminPayload payload) {
-        Response response = createAdmin(payload);
-
-        if (response.getStatusCode() == 201) {
-            String adminId = response.jsonPath().getString("adminId");
-            return adminId;
-        }
-        return null;
     }
 
 
@@ -69,7 +57,7 @@ public class AdminEndpoints {
                 .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
                 .pathParam("adminId", adminId)
                 .when()
-                .delete(Routes.GET_ADMIN)
+                .delete(Routes.GET_ADMIN) // same endpoint as Get Admin
                 .then()
                 .extract()
                 .response();
