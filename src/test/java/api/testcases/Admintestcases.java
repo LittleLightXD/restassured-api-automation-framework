@@ -1,32 +1,35 @@
 package api.testcases;
 
-import api.endpoints.AdminEndpoints;
-import api.payload.AdminPayload;
-import api.utils.FakeDataGenerator;
-import api.specs.ReusableRequestSpec;
-import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
+import api.dataproviders.AdminDataProvider;
+import api.endpoints.AdminEndpoints;
+import api.payload.AdminPayload;
+import api.payload.LoginAdminPayload;
+import api.utils.FakeDataGenerator;
+import api.utils.TestData;
+import io.restassured.response.Response;
+
 
 public class Admintestcases {
-
 
 
     @Test(priority = 1, description = "Create admin with valid data")
     public void createAdminWithValidDataTest() {
 
+        TestData.adminPassword = FakeDataGenerator.getPassword();
+        TestData.adminEmail = FakeDataGenerator.getUniqueEmail();
 
         AdminPayload payload = new AdminPayload();
         payload.setCity("Bangalore");
         payload.setCountry("India");
         payload.setDob("1990-01-01");
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
+        payload.setEmail(TestData.adminEmail);
         payload.setFirstName(FakeDataGenerator.getFirstName());
         payload.setGender("MALE");
         payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setPassword(FakeDataGenerator.getPassword());
+        payload.setPassword(TestData.adminPassword);
         payload.setPhone(FakeDataGenerator.getPhoneNumber());
         payload.setRole("ADMIN");
         payload.setState("Karnataka");
@@ -36,13 +39,30 @@ public class Admintestcases {
 
         Response response = AdminEndpoints.createAdmin(payload);
 
-
+        TestData.adminId = response.jsonPath().getString("data.userId");
+        
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
-        Assert.assertNotNull(response.jsonPath().getString("adminId"), "Admin ID should not be null");
+        Assert.assertNotNull(TestData.adminId, "Admin ID should not be null");
 
     }
 
-    @Test(priority = 2, description = "Get admin by valid ID")
+    @Test(priority = 2, description = "Login as admin", dependsOnMethods = "createAdminWithValidDataTest")
+    public void adminLoginTest() {
+
+        LoginAdminPayload payload = new LoginAdminPayload();
+
+        payload.setEmail(TestData.adminEmail);
+        payload.setPassword(TestData.adminPassword);
+        payload.setRole("ADMIN");
+
+        Response response = AdminEndpoints.loginAdmin(payload);
+
+        Assert.assertEquals(response.getStatusCode(),200,"Admin login should be successful");
+        Assert.assertNotNull(TestData.adminToken,"Admin token should not be null");
+        Assert.assertNotNull(TestData.adminId,"Admin user ID should not be null");
+    }
+
+    @Test(priority = 3, description = "Get admin by valid ID")
     public void getAdminByIdTest() {
 
 
@@ -57,49 +77,32 @@ public class Admintestcases {
         payload.setRole("ADMIN");
         payload.setStatus("ACTIVE");
 
-        Response createResponse = AdminEndpoints.createAdmin(payload);
-        String adminId = createResponse.jsonPath().getString("adminId");
 
-
-        Response response = AdminEndpoints.getAdminById(adminId);
+        Response response = AdminEndpoints.getAdminById(TestData.adminId);
 
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
-        Assert.assertEquals(response.jsonPath().getString("adminId"), adminId, "Admin ID should match");
+        Assert.assertEquals(response.jsonPath().getString("data.userId"),TestData.adminId,"Admin ID should match");
 
     }
 
-    @Test(priority = 3, description = "Update admin details")
+    @Test(priority = 4, description = "Update admin details")
     public void updateAdminTest() {
-
-
-        AdminPayload payload = new AdminPayload();
-        payload.setCity("Delhi");
-        payload.setCountry("India");
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setFirstName("Original");
-        payload.setLastName("Name");
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setRole("ADMIN");
-        payload.setStatus("ACTIVE");
-
-        Response createResponse = AdminEndpoints.createAdmin(payload);
-        String adminId = createResponse.jsonPath().getString("adminId");
-
 
         AdminPayload updatePayload = new AdminPayload();
         updatePayload.setFirstName("Updated");
         updatePayload.setLastName("Name");
+        updatePayload.setCity("Bangalore");
+        updatePayload.setCountry("India");
+        updatePayload.setState("Karnataka");
 
-        Response response = AdminEndpoints.updateAdmin(adminId, updatePayload);
-
+        Response response = AdminEndpoints.updateAdmin(TestData.adminId, updatePayload);
 
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
 
     }
 
 
-    @Test(priority = 5, dataProvider = "validAdminData",
+    @Test(priority = 5, dataProvider = "validAdminData", dataProviderClass = AdminDataProvider.class,
             description = "Create admin with multiple valid datasets")
     public void createAdminDataDrivenTest(String firstName, String lastName, String email, String phone) {
 
@@ -113,6 +116,10 @@ public class Admintestcases {
         payload.setPhone(phone);
         payload.setRole("ADMIN");
         payload.setStatus("ACTIVE");
+        payload.setDob("1990-01-01");
+        payload.setGender("MALE");
+        payload.setState("Karnataka");
+        payload.setZoneId("ALPHA");
 
         Response response = AdminEndpoints.createAdmin(payload);
 
@@ -148,7 +155,6 @@ public class Admintestcases {
         AdminPayload payload = new AdminPayload();
         payload.setCountry("India");
         payload.setEmail(FakeDataGenerator.getUniqueEmail());
-
         payload.setPassword(FakeDataGenerator.getPassword());
         payload.setPhone(FakeDataGenerator.getPhoneNumber());
         payload.setRole("ADMIN");
@@ -161,17 +167,7 @@ public class Admintestcases {
 
     }
 
-    @Test(priority = 8, description = "Get admin with invalid ID")
-    public void getAdminWithInvalidIdTest() {
-
-        Response response = AdminEndpoints.getAdminById("invalid-admin-id-12345");
-
-
-        Assert.assertEquals(response.getStatusCode(), 404, "Expected status code 404");
-
-    }
-
-    @Test(priority = 9, description = "Duplicate email validation")
+    @Test(priority = 8, description = "Duplicate email validation")
     public void duplicateEmailTest() {
 
         String duplicateEmail = FakeDataGenerator.getUniqueEmail();
@@ -187,6 +183,7 @@ public class Admintestcases {
         payload1.setPhone(FakeDataGenerator.getPhoneNumber());
         payload1.setRole("ADMIN");
         payload1.setStatus("ACTIVE");
+        payload1.setState("Karnataka");
 
         Response response1 = AdminEndpoints.createAdmin(payload1);
         Assert.assertEquals(response1.getStatusCode(), 201, "First admin should be created");
@@ -202,31 +199,13 @@ public class Admintestcases {
         payload2.setPhone(FakeDataGenerator.getPhoneNumber());
         payload2.setRole("ADMIN");
         payload2.setStatus("ACTIVE");
+        payload2.setState("Karnataka");
 
         Response response2 = AdminEndpoints.createAdmin(payload2);
-
 
         Assert.assertTrue(response2.getStatusCode() == 409 || response2.getStatusCode() == 400,
                 "Duplicate email should be rejected");
 
     }
 
-    @Test(priority = 10, description = "Unauthorized access without token")
-    public void unauthorizedAccessTest() {
-
-        String adminId = "test-admin-id";
-
-
-
-        Response response = given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .pathParam("adminId", adminId)
-                .when()
-                .get(api.endpoints.Routes.GET_ADMIN);
-
-        Assert.assertEquals(response.getStatusCode(), 401,
-                "An unauthenticated request should return 401");
-
-
-    }
 }

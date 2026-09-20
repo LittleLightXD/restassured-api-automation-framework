@@ -4,11 +4,9 @@ import api.payload.*;
 import api.specs.ReusableRequestSpec;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
-import api.utils.*;
+import api.utils.TestData;
 
 public class AdminEndpoints {
-
-    Constants constants = new Constants();
 
     public static Response createAdmin(AdminPayload payload) {
         Response response = given()
@@ -26,7 +24,7 @@ public class AdminEndpoints {
 
     public static Response getAdminById(String adminId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(Constants.TOKEN()))
+                .spec(ReusableRequestSpec.buildAdminRequestSpec())
                 .pathParam("adminId", adminId)
                 .when()
                 .get(Routes.GET_ADMIN)
@@ -40,7 +38,7 @@ public class AdminEndpoints {
 
     public static Response updateAdmin(String adminId, AdminPayload payload) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildAdminRequestSpec())
                 .pathParam("adminId", adminId)
                 .body(payload)
                 .when()
@@ -55,7 +53,7 @@ public class AdminEndpoints {
 
     public static Response deleteAdmin(String adminId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("adminId", adminId)
                 .when()
                 .delete(Routes.GET_ADMIN) // same endpoint as Get Admin
@@ -80,8 +78,8 @@ public class AdminEndpoints {
         if (response.getStatusCode() == 200) {
             String token = response.jsonPath().getString("data.jwtToken");
             String userId = response.jsonPath().getString("data.userId");
-            TokenManager.setToken(token);
-            TokenManager.setUserId(userId);
+            TestData.adminToken = token;
+            TestData.adminId = userId;
         }
 
         return response;

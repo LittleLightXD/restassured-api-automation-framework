@@ -2,7 +2,7 @@ package api.endpoints;
 
 import api.payload.OrderPayload;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
+import api.utils.TestData;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -12,7 +12,7 @@ public class OrderEndpoints {
 
     public static Response createOrder(String shopperId, OrderPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
                 .post(Routes.POST_ORDER.replace("{shopperId}", shopperId))
@@ -30,7 +30,7 @@ public class OrderEndpoints {
 
     public static Response getShopperOrders(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_ORDER.replace("{shopperId}", shopperId))
                 .then()
@@ -41,7 +41,7 @@ public class OrderEndpoints {
 
     public static Response getOrderById(String shopperId, String orderId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.UPDATE_ORDER.replace("{shopperId}", shopperId)
                         .replace("{orderId}", orderId))
@@ -53,7 +53,7 @@ public class OrderEndpoints {
 
     public static Response updateOrder(String shopperId, String orderId, OrderPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
                 .put(Routes.UPDATE_ORDER.replace("{shopperId}", shopperId)
@@ -66,7 +66,7 @@ public class OrderEndpoints {
 
     public static Response cancelOrder(String shopperId, String orderId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body("{\"orderStatus\": \"CANCELLED\"}")
                 .when()
                 .put(Routes.UPDATE_ORDER.replace("{shopperId}", shopperId)
@@ -79,7 +79,7 @@ public class OrderEndpoints {
 
     public static Response getOrderInvoice(String shopperId, String orderId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_ORDER_INVOICE.replace("{shopperId}", shopperId)
                         .replace("{orderId}", orderId))
@@ -91,7 +91,7 @@ public class OrderEndpoints {
 
     public static Response getOrdersByStatus(String shopperId, String status) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("status", status)
                 .when()
                 .get(Routes.GET_ORDER.replace("{shopperId}", shopperId))
@@ -103,7 +103,7 @@ public class OrderEndpoints {
 
     public static Response getOrdersByPaymentStatus(String shopperId, String paymentStatus) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("paymentStatus", paymentStatus)
                 .when()
                 .get(Routes.GET_ORDER.replace("{shopperId}", shopperId))
@@ -115,7 +115,7 @@ public class OrderEndpoints {
 
     public static Response trackOrder(String shopperId, String trackingNumber) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("trackingNumber", trackingNumber)
                 .when()
                 .get(Routes.GET_ORDER.replace("{shopperId}", shopperId))
@@ -127,7 +127,7 @@ public class OrderEndpoints {
 
     public static Response generateInvoicePDF(String shopperId, String orderId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .accept("application/pdf")
                 .when()
                 .get(Routes.GET_ORDER_INVOICE.replace("{shopperId}", shopperId)
@@ -140,7 +140,7 @@ public class OrderEndpoints {
 
     public static Response deleteOrder(String shopperId, String orderId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.UPDATE_ORDER.replace("{shopperId}", shopperId)
                         .replace("{orderId}", orderId))

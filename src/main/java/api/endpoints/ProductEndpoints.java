@@ -2,7 +2,6 @@ package api.endpoints;
 
 import api.payload.ProductPayload;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -12,7 +11,7 @@ public class ProductEndpoints {
 
     public static Response createProduct(String merchantId, ProductPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("merchantId", merchantId)
                 .body(payload)
                 .when()
@@ -77,7 +76,7 @@ public class ProductEndpoints {
 
     public static Response updateProduct(String productId, ProductPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("productId", productId)
                 .body(payload)
                 .when()
@@ -90,7 +89,7 @@ public class ProductEndpoints {
 
     public static Response deleteProduct(String productId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.SINGLE_PRODUCT.replace("{productId}", productId))
                 .then()

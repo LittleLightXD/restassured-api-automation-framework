@@ -2,7 +2,6 @@ package api.endpoints;
 
 import api.payload.MerchantPayload;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 
@@ -36,7 +35,7 @@ public class MerchantEndpoints {
 
     public static Response getMerchantById(String merchantId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .when()
                 .get(Routes.GET_MERCHANT)
@@ -50,7 +49,7 @@ public class MerchantEndpoints {
 
     public static Response getAllMerchants() {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.CREATE_MERCHANT)
                 .then()
@@ -63,7 +62,7 @@ public class MerchantEndpoints {
 
     public static Response updateMerchant(String merchantId, MerchantPayload payload) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .body(payload)
                 .when()
@@ -78,7 +77,7 @@ public class MerchantEndpoints {
 
     public static Response deleteMerchant(String merchantId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .when()
                 .delete(Routes.UPDATE_MERCHANT)
@@ -92,7 +91,7 @@ public class MerchantEndpoints {
 
     public static Response updateMerchantStatus(String merchantId, String status) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .queryParam("status", status)
                 .when()
@@ -107,7 +106,7 @@ public class MerchantEndpoints {
 
     public static Response getMerchantWithCompanyDetails(String merchantId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .when()
                 .get(Routes.GET_MERCHANT)
@@ -121,7 +120,7 @@ public class MerchantEndpoints {
 
     public static Response getMerchantWithAddressDetails(String merchantId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .when()
                 .get(Routes.GET_MERCHANT)
@@ -135,7 +134,7 @@ public class MerchantEndpoints {
 
     public static Response searchMerchants(String searchTerm) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("search", searchTerm)
                 .when()
                 .get(Routes.CREATE_MERCHANT)
@@ -149,7 +148,7 @@ public class MerchantEndpoints {
 
     public static Response getMerchantsByStatus(String status) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("status", status)
                 .when()
                 .get(Routes.GET_MERCHANT_ZONEID)

@@ -2,7 +2,6 @@ package api.endpoints;
 
 import api.payload.ReviewPayload;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -12,7 +11,7 @@ public class ReviewEndpoints {
 
     public static Response createReview(ReviewPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
                 .post(Routes.POST_REVIEW)
@@ -77,7 +76,7 @@ public class ReviewEndpoints {
 
     public static Response updateReview(String reviewId, ReviewPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
                 .put(Routes.UPDATE_REVIEW.replace("{reviewId}", reviewId))
@@ -89,7 +88,7 @@ public class ReviewEndpoints {
 
     public static Response deleteReview(String reviewId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.DELETE_REVIEW.replace("{reviewId}", reviewId))
                 .then()
@@ -100,7 +99,7 @@ public class ReviewEndpoints {
 
     public static Response markReviewHelpful(String reviewId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body("{\"helpful\": true}")
                 .when()
                 .put(Routes.UPDATE_REVIEW.replace("{reviewId}", reviewId))
@@ -112,7 +111,7 @@ public class ReviewEndpoints {
 
     public static Response markReviewUnhelpful(String reviewId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body("{\"unhelpful\": true}")
                 .when()
                 .put(Routes.UPDATE_REVIEW.replace("{reviewId}", reviewId))
@@ -160,7 +159,7 @@ public class ReviewEndpoints {
 
     public static Response reportReview(String reviewId, String reason) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body("{\"reason\": \"" + reason + "\"}")
                 .when()
                 .post(Routes.UPDATE_REVIEW.replace("{reviewId}", reviewId) + "/report")

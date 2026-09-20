@@ -2,7 +2,6 @@ package api.endpoints;
 
 import api.payload.ShopperPayload;
 import api.specs.ReusableRequestSpec;
-import api.utils.TokenManager;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -30,7 +29,7 @@ public class ShopperEndpoints {
 
     public static Response getShopperById(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_SHOPPER.replace("{shopperId}", shopperId))
                 .then()
@@ -41,7 +40,7 @@ public class ShopperEndpoints {
 
     public static Response updateShopper(String shopperId, ShopperPayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
                 .put(Routes.UPDATE_SHOPPER.replace("{shopperId}", shopperId))
@@ -53,7 +52,7 @@ public class ShopperEndpoints {
 
     public static Response deleteShopper(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.UPDATE_SHOPPER.replace("{shopperId}", shopperId))
                 .then()
@@ -64,7 +63,7 @@ public class ShopperEndpoints {
 
     public static Response addShopperAddress(String shopperId, ShopperPayload.AddressDetails addressDetails) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(addressDetails)
                 .when()
                 .post(Routes.POST_SHOPPER_ADDRESS.replace("{shopperId}", shopperId))
@@ -76,7 +75,7 @@ public class ShopperEndpoints {
 
     public static Response getShopperAddress(String shopperId, String addressId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
                         .replace("{addressId}", addressId))
@@ -88,7 +87,7 @@ public class ShopperEndpoints {
 
     public static Response updateShopperAddress(String shopperId, String addressId, ShopperPayload.AddressDetails addressDetails) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(addressDetails)
                 .when()
                 .put(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
@@ -101,7 +100,7 @@ public class ShopperEndpoints {
 
     public static Response deleteShopperAddress(String shopperId, String addressId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
                         .replace("{addressId}", addressId))
@@ -113,7 +112,7 @@ public class ShopperEndpoints {
 
     public static Response addBankAccount(ShopperPayload.BankAccountDetails bankDetails) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(bankDetails)
                 .when()
                 .post(Routes.POST_SHOPPER_BANK_ACCOUNT)
@@ -125,7 +124,7 @@ public class ShopperEndpoints {
 
     public static Response addToWishlist(String shopperId, String productId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("productId", productId)
                 .when()
                 .post(Routes.POST_SHOPPER_WISHLIST.replace("{shopperId}", shopperId))
@@ -137,7 +136,7 @@ public class ShopperEndpoints {
 
     public static Response getWishlist(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_SHOPPER_WISHLIST.replace("{shopperId}", shopperId))
                 .then()
@@ -148,7 +147,7 @@ public class ShopperEndpoints {
 
     public static Response removeFromWishlist(String shopperId, String productId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.DELETE_SHOPPER_WISHLIST.replace("{shopperId}", shopperId)
                         .replace("{productId}", productId))
@@ -160,7 +159,7 @@ public class ShopperEndpoints {
 
     public static Response addToCart(String shopperId, String productId, Integer quantity) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("productId", productId)
                 .queryParam("quantity", quantity)
                 .when()
@@ -173,7 +172,7 @@ public class ShopperEndpoints {
 
     public static Response getCart(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .get(Routes.GET_SHOPPER_CART.replace("{shopperId}", shopperId))
                 .then()
@@ -184,7 +183,7 @@ public class ShopperEndpoints {
 
     public static Response updateCartItem(String shopperId, String productId, Integer quantity) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("quantity", quantity)
                 .when()
                 .put(Routes.UPDATE_SHOPPER_CART.replace("{shopperId}", shopperId)
@@ -197,7 +196,7 @@ public class ShopperEndpoints {
 
     public static Response removeFromCart(String shopperId, String itemId) {
         return given()
-                .spec(ReusableRequestSpec.buildAuthenticatedRequestSpec(TokenManager.getToken()))
+                .spec(ReusableRequestSpec.buildRequestSpec())
                 .when()
                 .delete(Routes.DELETE_SHOPPER_CART.replace("{shopperId}", shopperId)
                         .replace("{itemId}", itemId))

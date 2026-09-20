@@ -1,73 +1,38 @@
 package api.specs;
 
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import api.utils.TestData;
 
 public class ReusableRequestSpec {
 
+    public static RequestSpecification buildRequestSpec() {
 
-  public static RequestSpecification buildRequestSpec() {
+        RequestSpecBuilder builder = new RequestSpecBuilder();
 
-    RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.setBaseUri("https://www.shoppersstack.com/shopping")
+               .setContentType(ContentType.JSON)
+               .setAccept(ContentType.JSON);
 
-    builder.setBaseUri("https://www.shoppersstack.com/shopping")
-           .setContentType(ContentType.JSON)
-           .setAccept(ContentType.JSON);
-
-    return builder.build();
-}
-
-
-    public static RequestSpecification buildAuthenticatedRequestSpec(String token) {
-        RequestSpecification spec = buildRequestSpec();
-        return spec.header("Authorization", "Bearer " + token);
+        return builder.build().relaxedHTTPSValidation();
     }
 
+    public static RequestSpecification buildAdminRequestSpec() {
 
-    private static void addLogging(RequestSpecBuilder builder) {
-        try {
-            PrintStream requestLog = new PrintStream(new FileOutputStream("./test-output/request-logs.txt", true));
-            PrintStream responseLog = new PrintStream(new FileOutputStream("./test-output/response-logs.txt", true));
-
-            builder.addFilter(new RequestLoggingFilter(requestLog));
-            builder.addFilter(new ResponseLoggingFilter(responseLog));
-        } catch (IOException e) {
-            System.out.println("Error setting up logging: " + e.getMessage());
-        }
+        return buildRequestSpec()
+                .header("Authorization", "Bearer " + TestData.adminToken);
     }
 
+    public static RequestSpecification buildMerchantRequestSpec() {
 
-    public static RequestSpecification buildRequestSpecWithBaseURI(String baseURI) {
-
-    RequestSpecBuilder builder = new RequestSpecBuilder();
-
-    builder.setBaseUri(baseURI)
-           .setContentType(ContentType.JSON)
-           .setAccept(ContentType.JSON);
-
-    addLogging(builder);
-
-        return builder.build();
+        return buildRequestSpec()
+                .header("Authorization", "Bearer " + TestData.merchantToken);
     }
 
+    public static RequestSpecification buildShopperRequestSpec() {
 
-    public static RequestSpecification buildRequestSpecWithHeaders(String... headers) {
-        RequestSpecification spec = buildRequestSpec();
-
-        if (headers.length % 2 == 0) {
-            for (int i = 0; i < headers.length; i += 2) {
-                spec = spec.header(headers[i], headers[i + 1]);
-            }
-        }
-
-        return spec;
+        return buildRequestSpec()
+                .header("Authorization", "Bearer " + TestData.shopperToken);
     }
 }
-

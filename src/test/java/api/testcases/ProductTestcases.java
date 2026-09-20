@@ -6,6 +6,7 @@ import api.utils.FakeDataGenerator;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import api.utils.TestData;
 
 public class ProductTestcases {
 
@@ -26,7 +27,7 @@ public class ProductTestcases {
         payload.setBrand("TestBrand");
         payload.setMerchantId("merchant-123456");
 
-        Response response = ProductEndpoints.createProduct(merchantId,payload);
+        Response response = ProductEndpoints.createProduct(TestData.merchantId,payload);
 
         Assert.assertEquals(response.getStatusCode(), 201);
         Assert.assertNotNull(response.jsonPath().getString("productId"));
@@ -140,7 +141,7 @@ public class ProductTestcases {
         payload.setQuantity(quantity);
         payload.setCategory(category);
 
-        Response response = ProductEndpoints.createProduct(merchantId,payload);
+        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
 
         Assert.assertEquals(response.getStatusCode(), 201);
 
@@ -157,7 +158,7 @@ public class ProductTestcases {
         payload.setQuantity(100);
         payload.setCategory("ELECTRONICS");
 
-        Response response = ProductEndpoints.createProduct(merchantId,payload);
+        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
@@ -172,7 +173,7 @@ public class ProductTestcases {
         payload.setQuantity(100);
         payload.setCategory("ELECTRONICS");
 
-        Response response = ProductEndpoints.createProduct(merchantId,payload);
+        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
 
         Assert.assertEquals(response.getStatusCode(), 400);
     }
@@ -186,7 +187,7 @@ public class ProductTestcases {
         payload.setQuantity(-10);
         payload.setCategory("ELECTRONICS");
 
-        Response response = ProductEndpoints.createProduct(payload);
+        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
 
         Assert.assertEquals(response.getStatusCode(), 400);
 
