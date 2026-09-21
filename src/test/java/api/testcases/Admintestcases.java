@@ -1,5 +1,7 @@
 package api.testcases;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,6 +16,7 @@ import io.restassured.response.Response;
 
 public class Admintestcases {
 
+    private static final Logger logger = LogManager.getLogger(Admintestcases.class);
 
     @Test(priority = 1, description = "Create admin with valid data")
     public void createAdminWithValidDataTest() {
@@ -40,6 +43,9 @@ public class Admintestcases {
         Response response = AdminEndpoints.createAdmin(payload);
 
         TestData.adminId = response.jsonPath().getString("data.userId");
+
+        logger.info("Admin created successfully with ID: {}", TestData.adminId);
+        logger.info("Expected status : 201, Actual status: {}", response.getStatusCode());
         
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
         Assert.assertNotNull(TestData.adminId, "Admin ID should not be null");
@@ -50,12 +56,13 @@ public class Admintestcases {
     public void adminLoginTest() {
 
         LoginAdminPayload payload = new LoginAdminPayload();
-
         payload.setEmail(TestData.adminEmail);
         payload.setPassword(TestData.adminPassword);
         payload.setRole("ADMIN");
 
         Response response = AdminEndpoints.loginAdmin(payload);
+        
+        logger.info("Expected status : 200, Actual status: {}", response.getStatusCode());
 
         Assert.assertEquals(response.getStatusCode(),200,"Admin login should be successful");
         Assert.assertNotNull(TestData.adminToken,"Admin token should not be null");
@@ -64,7 +71,6 @@ public class Admintestcases {
 
     @Test(priority = 3, description = "Get admin by valid ID")
     public void getAdminByIdTest() {
-
 
         AdminPayload payload = new AdminPayload();
         payload.setCity("Mumbai");
@@ -79,6 +85,8 @@ public class Admintestcases {
 
 
         Response response = AdminEndpoints.getAdminById(TestData.adminId);
+        
+        logger.info("Expected status : 200, Actual status: {}", response.getStatusCode());
 
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
         Assert.assertEquals(response.jsonPath().getString("data.userId"),TestData.adminId,"Admin ID should match");
@@ -96,6 +104,8 @@ public class Admintestcases {
         updatePayload.setState("Karnataka");
 
         Response response = AdminEndpoints.updateAdmin(TestData.adminId, updatePayload);
+        
+        logger.info("Expected status : 200, Actual status: {}", response.getStatusCode());
 
         Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
 
@@ -122,6 +132,8 @@ public class Admintestcases {
         payload.setZoneId("ALPHA");
 
         Response response = AdminEndpoints.createAdmin(payload);
+        
+        logger.info("Expected status : 201, Actual status: {}", response.getStatusCode());
 
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
     }
@@ -143,7 +155,8 @@ public class Admintestcases {
         payload.setStatus("ACTIVE");
 
         Response response = AdminEndpoints.createAdmin(payload);
-
+        
+        logger.info("Expected status : 400, Actual status: {}", response.getStatusCode());
 
         Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400 for invalid email");
 
@@ -151,6 +164,7 @@ public class Admintestcases {
 
     @Test(priority = 7, description = "Create admin with missing required fields")
     public void createAdminWithMissingFieldsTest() {
+        
 
         AdminPayload payload = new AdminPayload();
         payload.setCountry("India");
@@ -160,6 +174,7 @@ public class Admintestcases {
         payload.setRole("ADMIN");
 
         Response response = AdminEndpoints.createAdmin(payload);
+        logger.info("Expected status : 400, Actual status: {}", response.getStatusCode());
 
 
         Assert.assertTrue(response.getStatusCode() == 400 || response.getStatusCode() == 422,
@@ -169,6 +184,7 @@ public class Admintestcases {
 
     @Test(priority = 8, description = "Duplicate email validation")
     public void duplicateEmailTest() {
+        
 
         String duplicateEmail = FakeDataGenerator.getUniqueEmail();
 
@@ -187,6 +203,8 @@ public class Admintestcases {
 
         Response response1 = AdminEndpoints.createAdmin(payload1);
         Assert.assertEquals(response1.getStatusCode(), 201, "First admin should be created");
+        
+        logger.info("Expected status : 201, Actual status: {}", response1.getStatusCode());
 
 
         AdminPayload payload2 = new AdminPayload();
@@ -202,6 +220,8 @@ public class Admintestcases {
         payload2.setState("Karnataka");
 
         Response response2 = AdminEndpoints.createAdmin(payload2);
+
+        logger.info("Expected status : 409, Actual status: {}", response2.getStatusCode());
 
         Assert.assertTrue(response2.getStatusCode() == 409 || response2.getStatusCode() == 400,
                 "Duplicate email should be rejected");

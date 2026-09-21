@@ -8,7 +8,9 @@ import api.utils.TestData;
 
 public class AdminEndpoints {
 
+
     public static Response createAdmin(AdminPayload payload) {
+
         Response response = given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
