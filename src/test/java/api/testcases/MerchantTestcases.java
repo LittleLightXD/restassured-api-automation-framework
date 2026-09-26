@@ -1,286 +1,191 @@
 package api.testcases;
 
-import api.endpoints.MerchantEndpoints;
-import api.payload.MerchantPayload;
-import api.utils.FakeDataGenerator;
-import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import api.endpoints.MerchantApprovalEndpoints;
+import api.endpoints.MerchantEndpoints;
+import api.payload.LoginMerchantPayload;
+import api.payload.MerchantPayload;
+import api.specs.ReusableRequestSpec;
+import api.utils.FakeDataGenerator;
+import api.utils.TestData;
+import io.restassured.response.Response;
 
 public class MerchantTestcases {
+    
+    private static final Logger logger = LogManager.getLogger(Admintestcases.class);
 
+    @Test(priority = 1, description = "Create merchant with valid data")
+    public void createMerchantTest() {
 
-
-    @Test(priority = 1, description = "Create merchant with valid data - Status 201")
-    public void createMerchantWithValidDataTest() {
+        TestData.merchantPassword = FakeDataGenerator.getPassword();
+        TestData.merchantEmail = FakeDataGenerator.getUniqueEmail();
 
         MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setBusinessEmail(FakeDataGenerator.getUniqueEmail());
         payload.setFirstName(FakeDataGenerator.getFirstName());
         payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
+        payload.setGender("male");
+        payload.setEmail(TestData.merchantEmail);
         payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setBusinessPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setBusinessType("RETAIL");
-        payload.setGstNumber("18AABCU1234H1Z0");
+        payload.setCommission("30");
+        payload.setProductLimit(10);
+        payload.setPassword(TestData.merchantPassword);
+        payload.setZoneId("BANGALORE" + TestData.adminId);
+        payload.setCity("Bardhaman");
+        payload.setState("West Bengal");
+        payload.setCountry("India");
+
+        MerchantPayload.CompanyDetails company = new MerchantPayload.CompanyDetails();
+        company.setName("uytr");
+        company.setPhone(FakeDataGenerator.getPhoneNumber());
+        company.setEmail(FakeDataGenerator.getUniqueEmail());
+        company.setWebAddress("ytrew.com");
+        company.setGstn("gfdsdfdsd4433");
+        company.setRegisterNumber(FakeDataGenerator.getUUID());
+        
+        MerchantPayload.AddressDetails address = new MerchantPayload.AddressDetails();
+        address.setBuildingInfo("qwerty");
+        address.setLandmark("uytrew");
+        address.setCountry("India");
+        address.setState("West Bengal");
+        address.setCity("Bardhaman");
+        address.setType("Books");
+        address.setPincode("713101");
+        address.setStreetInfo("Katwa Bardhaman Road");
+
+        company.setAddress(address);
+        payload.setCompany(company);
+
 
         Response response = MerchantEndpoints.createMerchant(payload);
 
-        Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
-        Assert.assertNotNull(response.jsonPath().getString("merchantId"), "Merchant ID should not be null");
+        TestData.merchantId = response.jsonPath().getString("data.userId");
+        logger.info("Expected status : 201, Actual status: {}", response.getStatusCode());
+
+        Assert.assertEquals(response.getStatusCode(), 201, "Merchant should be created successfully");
+        Assert.assertNotNull(TestData.merchantId, "Merchant ID should not be null");
+    }
+
+    
+    @Test(priority = 2, description = "Login merchant", dependsOnMethods = "createMerchantTest")
+    public void loginMerchantTest() {
+
+        LoginMerchantPayload loginPayload =
+                new LoginMerchantPayload();
+
+        loginPayload.setEmail(TestData.merchantEmail);
+        loginPayload.setPassword(TestData.merchantPassword);
+        loginPayload.setRole("MERCHANT");
+
+        Response response = MerchantEndpoints.loginMerchant(loginPayload);
+        TestData.merchantToken = response.jsonPath().getString("data.userId");
+
+        Assert.assertEquals(response.getStatusCode(),200, "Merchant login should be successful");
 
     }
 
-    @Test(priority = 2, description = "Create merchant with company and address details")
-    public void createMerchantWithEmbeddedDetailsTest() {
-
-        MerchantPayload.CompanyDetails companyDetails = new MerchantPayload.CompanyDetails();
-        companyDetails.setCompanyName(FakeDataGenerator.getCompanyName());
-        companyDetails.setBusinessType("WHOLESALE");
-        companyDetails.setGst("18AABCU1234H1Z0");
-
-        MerchantPayload.AddressDetails addressDetails = new MerchantPayload.AddressDetails();
-        addressDetails.setAddress(FakeDataGenerator.getAddress());
-        addressDetails.setCity(FakeDataGenerator.getCity());
-        addressDetails.setState("Karnataka");
-        addressDetails.setCountry(FakeDataGenerator.getCountry());
-        addressDetails.setZipCode(FakeDataGenerator.getPostalCode());
-
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setCompanyDetails(companyDetails);
-        payload.setAddressDetails(addressDetails);
-
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
-    }
-
-    @Test(priority = 3, description = "Get merchant by valid ID")
+    @Test(priority = 3, description = "Get first merchant")
     public void getMerchantByIdTest() {
 
+        Response response = MerchantEndpoints.getMerchantById(TestData.merchantId);
 
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
+        Assert.assertEquals(response.getStatusCode(),200, "Merchant should be fetched successfully");
 
-        Response createResponse = MerchantEndpoints.createMerchant(payload);
-        String merchantId = createResponse.jsonPath().getString("merchantId");
-
-
-        Response response = MerchantEndpoints.getMerchantById(merchantId);
-
-        Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
-        Assert.assertEquals(response.jsonPath().getString("merchantId"), merchantId);
-
+        Assert.assertEquals(response.jsonPath().getString("data.userId"),TestData.merchantId,"Merchant ID should match");
     }
 
-    @Test(priority = 4, description = "Update merchant - API Chaining")
-    public void updateMerchantTest() {
-
+    @Test(priority = 4, description = "Create merchant to reject")
+    public void createMerchantToRejectTest() {
 
         MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName("Original Name");
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
+        payload.setFirstName(FakeDataGenerator.getFirstName());
+        payload.setLastName(FakeDataGenerator.getLastName());
+        payload.setGender("male");
+        payload.setEmail(TestData.merchantEmail);
         payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
+        payload.setCommission("30");
+        payload.setProductLimit(10);
+        payload.setPassword(TestData.merchantPassword);
+        payload.setZoneId("BANGALORE" + TestData.adminId);
+        payload.setCity("Bardhaman");
+        payload.setState("West Bengal");
+        payload.setCountry("India");
 
-        Response createResponse = MerchantEndpoints.createMerchant(payload);
-        String merchantId = createResponse.jsonPath().getString("merchantId");
+        MerchantPayload.CompanyDetails company = new MerchantPayload.CompanyDetails();
+        company.setName("uytr");
+        company.setPhone(FakeDataGenerator.getPhoneNumber());
+        company.setEmail(FakeDataGenerator.getUniqueEmail());
+        company.setWebAddress("ytrew.com");
+        company.setGstn("gfdsdfdsd4433");
+        company.setRegisterNumber(FakeDataGenerator.getUUID());
+        
+        MerchantPayload.AddressDetails address = new MerchantPayload.AddressDetails();
+        address.setBuildingInfo("qwerty");
+        address.setLandmark("uytrew");
+        address.setCountry("India");
+        address.setState("West Bengal");
+        address.setCity("Bardhaman");
+        address.setType("Books");
+        address.setPincode("713101");
+        address.setStreetInfo("Katwa Bardhaman Road");
 
+        company.setAddress(address);
+        payload.setCompany(company);
 
-        MerchantPayload updatePayload = new MerchantPayload();
-        updatePayload.setBusinessName("Updated Name");
-
-        Response response = MerchantEndpoints.updateMerchant(merchantId, updatePayload);
-
-        Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
-    }
-
-    @Test(priority = 5, description = "Update merchant status")
-    public void updateMerchantStatusTest() {
-
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-
-        Response createResponse = MerchantEndpoints.createMerchant(payload);
-        String merchantId = createResponse.jsonPath().getString("merchantId");
-
-
-        Response response = MerchantEndpoints.updateMerchantStatus(merchantId, "ACTIVE");
-
-        Assert.assertEquals(response.getStatusCode(), 200, "Expected status code 200");
-    }
-
-
-
-    @Test(priority = 10, dataProvider = "validMerchantData",
-           description = "Create merchant with multiple datasets")
-    public void createMerchantDataDrivenTest(String businessName, String email, String phone, String businessType) {
-
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(businessName);
-        payload.setEmail(email);
-        payload.setPhone(phone);
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setBusinessType(businessType);
 
         Response response = MerchantEndpoints.createMerchant(payload);
 
-        Assert.assertEquals(response.getStatusCode(), 201);
+        TestData.merchantReject = response.jsonPath().getString("data.userId");
     }
 
+    @Test(priority = 5, description = "Reject merchant")
+    public void blockMerchantTest() {
 
+        Response response =MerchantApprovalEndpoints.updateMerchantStatus(TestData.merchantId,"BLOCKED");
 
-    @Test(priority = 20, description = "Duplicate email validation - Status 409")
-    public void duplicateMerchantEmailTest() {
-
-        String duplicateEmail = FakeDataGenerator.getUniqueEmail();
-
-
-        MerchantPayload payload1 = new MerchantPayload();
-        payload1.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload1.setEmail(duplicateEmail);
-        payload1.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload1.setPassword(FakeDataGenerator.getStrongPassword());
-        payload1.setConfirmPassword(payload1.getPassword());
-
-        Response response1 = MerchantEndpoints.createMerchant(payload1);
-        Assert.assertEquals(response1.getStatusCode(), 201);
-
-
-        MerchantPayload payload2 = new MerchantPayload();
-        payload2.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload2.setEmail(duplicateEmail);
-        payload2.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload2.setPassword(FakeDataGenerator.getStrongPassword());
-        payload2.setConfirmPassword(payload2.getPassword());
-
-        Response response2 = MerchantEndpoints.createMerchant(payload2);
-
-        Assert.assertEquals(response2.getStatusCode(), 409, "Expected status code 409 for duplicate email");
+        Assert.assertEquals(response.getStatusCode(),200,"Merchant should be blocked successfully");
     }
 
-    @Test(priority = 21, description = "Missing required fields - Status 400")
-    public void createMerchantWithMissingFieldsTest() {
+    @Test(priority = 6, description = "Approve merchant")
+    public void approveMerchantTest() {
 
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
+        Response response = MerchantApprovalEndpoints.updateMerchantStatus(TestData.merchantId, "APPROVED");
 
-        payload.setPassword(FakeDataGenerator.getPassword());
-
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertTrue(response.getStatusCode() == 400 || response.getStatusCode() == 422,
-                "Expected error status code");
+        Assert.assertEquals(response.getStatusCode(), 200, "Merchant should be approved successfully");
     }
 
-    @Test(priority = 22, description = "Invalid email format - Status 400")
-    public void createMerchantWithInvalidEmailTest() {
+    @Test(priority = 7, description = "Get merchants by zone")
+    public void getMerchantsByZoneIdTest() {
 
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail("invalid-email-format");
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setConfirmPassword(payload.getPassword());
+        Response response = MerchantApprovalEndpoints.getAllMerchants(TestData.zoneId);
 
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400");
+        Assert.assertEquals(response.getStatusCode(), 200, "Merchants should be fetched successfully");
     }
 
-    @Test(priority = 23, description = "Invalid phone format - Status 400")
-    public void createMerchantWithInvalidPhoneTest() {
+    @Test(priority = 8, description = "Get approved merchants by zone")
+    public void getApprovedMerchantsByZoneTest() {
 
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone("123");
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setConfirmPassword(payload.getPassword());
+        Response response = MerchantApprovalEndpoints.getMerchantsByStatus("APPROVED", TestData.zoneId);
 
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400");
+        Assert.assertEquals(response.getStatusCode(), 200, "Approved merchants should be fetched successfully");
     }
 
-    @Test(priority = 24, description = "Invalid merchant ID - Status 404")
-    public void getMerchantWithInvalidIdTest() {
-
-        Response response = MerchantEndpoints.getMerchantById("invalid-merchant-id-99999");
-
-        Assert.assertEquals(response.getStatusCode(), 404, "Expected status code 404");
+    @Test(priority = 9, description = "Get active merchants by zone")
+    public void getActiveMerchantsTest() {
+        
+        Response response = MerchantApprovalEndpoints.getMerchantsByStatus("ACTIVE", TestData.zoneId);
+        
+        Assert.assertEquals(response.getStatusCode(), 200, "Active merchants should be fetched successfully");
     }
 
-    @Test(priority = 25, description = "Password and confirm password mismatch - Status 400")
-    public void passwordMismatchTest() {
+    @Test(priority = 10, description = "Get blocked merchants by zone")
+    public void getBlockedMerchantsTest() {
 
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword("Password@123");
-        payload.setConfirmPassword("DifferentPassword@123");
+        Response response = MerchantApprovalEndpoints.getMerchantsByStatus("BLOCKED", TestData.zoneId);
 
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400");
-    }
-
-    @Test(priority = 26, description = "Invalid GST number - Status 400")
-    public void invalidGstNumberTest() {
-
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setGstNumber("INVALID");
-
-        Response response = MerchantEndpoints.createMerchant(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400, "Expected status code 400");
-    }
-
-    @Test(priority = 27, description = "Delete merchant - Status 200/204")
-    public void deleteMerchantTest() {
-
-        MerchantPayload payload = new MerchantPayload();
-        payload.setBusinessName(FakeDataGenerator.getCompanyName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setPassword(FakeDataGenerator.getPassword());
-        payload.setConfirmPassword(payload.getPassword());
-
-        Response createResponse = MerchantEndpoints.createMerchant(payload);
-        String merchantId = createResponse.jsonPath().getString("merchantId");
-
-        Response response = MerchantEndpoints.deleteMerchant(merchantId);
-
-        Assert.assertTrue(response.getStatusCode() == 200 || response.getStatusCode() == 204,
-                "Expected 200 or 204");
-    }
-
-    @Test(priority = 28, description = "Access control - unauthorized request without token")
-    public void unauthorizedAccessTest() {
+        Assert.assertEquals(response.getStatusCode(), 200, "Blocked merchants should be fetched successfully");
     }
 }
-

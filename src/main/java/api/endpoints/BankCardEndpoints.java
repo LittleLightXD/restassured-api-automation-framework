@@ -1,6 +1,7 @@
 package api.endpoints;
 
-import api.payload.BankCardPayload;
+import api.payload.*;
+import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
 import io.restassured.response.Response;
 
@@ -18,12 +19,6 @@ public class BankCardEndpoints {
                 .then()
                 .extract()
                 .response();
-    }
-
-
-    public static String createBankAccountAndGetId(BankCardPayload payload) {
-        Response response = createBankAccount(payload);
-        return response.jsonPath().getString("bankAccountId");
     }
 
 
@@ -83,39 +78,30 @@ public class BankCardEndpoints {
                 .response();
     }
 
+    public static Response updateCardBalance(String amount, String cardNumber) {
 
-    public static Response getBankAccountTransactions(String bankAccountId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("bankAccountId", bankAccountId)
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .queryParam("amount", amount)
+                .queryParam("cardNumber", cardNumber)
                 .when()
-                .get(Routes.SHOPPER_BANK_CARDS_TRANSACTION)
+                .patch(Routes.POST_SHOPPER_BANK_CARD)
+                .then()
+                .extract()
+                .response();
+        }
+
+    public static Response verifyBankCard(VerifyBankCardPayload payload) {
+
+        return given()
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .body(payload)
+                .when()
+                .post(Routes.VERIFY_SHOPPER_BANK_CARD)
                 .then()
                 .extract()
                 .response();
     }
 
-
-    public static Response deleteBankAccount(String bankAccountId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .delete(Routes.POST_SHOPPER_BANK_ACCOUNT + "/" + bankAccountId)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response setBankAccountAsDefault(String bankAccountId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .body("{\"isDefault\": true}")
-                .when()
-                .put(Routes.POST_SHOPPER_BANK_ACCOUNT + "/" + bankAccountId + "/default")
-                .then()
-                .extract()
-                .response();
-    }
 }
 

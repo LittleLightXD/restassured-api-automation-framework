@@ -44,7 +44,6 @@ public class Admintestcases {
 
         TestData.adminId = response.jsonPath().getString("data.userId");
 
-        logger.info("Admin created successfully with ID: {}", TestData.adminId);
         logger.info("Expected status : 201, Actual status: {}", response.getStatusCode());
         
         Assert.assertEquals(response.getStatusCode(), 201, "Expected status code 201");
@@ -174,8 +173,8 @@ public class Admintestcases {
         payload.setRole("ADMIN");
 
         Response response = AdminEndpoints.createAdmin(payload);
-        logger.info("Expected status : 400, Actual status: {}", response.getStatusCode());
 
+        logger.info("Expected status : 400, Actual status: {}", response.getStatusCode());
 
         Assert.assertTrue(response.getStatusCode() == 400 || response.getStatusCode() == 422,
                 "Expected error status code");

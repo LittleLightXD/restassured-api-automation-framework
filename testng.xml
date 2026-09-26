@@ -5,24 +5,20 @@
 <suite name="ShopperStack Test Suite" parallel="methods" thread-count="1">
 
     <listeners>
-            <listener class-name="api.listeners.TestListener"/>
+        <listener class-name="api.listeners.TestListener"/>
     </listeners>
 
-    <!-- <test name="E2E API Tests">
-
-        <packages>
-            <package name="api.testcases"/>
-        </packages>
-
-    </test> -->
-
-    <test name="Admin API Tests">
+    <test name="API Tests">
 
         <classes>
             <class name="api.testcases.Admintestcases"/>
+            <class name="api.testcases.MerchantTestcases"/>
+            <class name="api.testcases.ProductTestcases"/>
+            <class name="api.testcases.ShopperTestcases"/>
+            <class name="api.testcases.OrderTestcases"/>
+            <class name="api.testcases.ReviewTestcases"/>
         </classes>
 
     </test>
-    
 
 </suite>

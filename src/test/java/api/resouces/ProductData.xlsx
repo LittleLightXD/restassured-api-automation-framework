@@ -1,0 +1,7 @@
+| productKey | productName              |   price | discountPrice | quantity | category    | subcategory  | brand   | description                 | productImage                                                       |
+| ---------- | ------------------------ | ------: | ------------: | -------: | ----------- | ------------ | ------- | --------------------------- | ------------------------------------------------------------------ |
+| product1   | Nike Air Zoom Pegasus 39 |  129.99 |        116.99 |       50 | Shoes       | Running      | Nike    | Comfortable running shoes   | [https://example.com/nike.jpg](https://example.com/nike.jpg)       |
+| product2   | iPhone 15 Pro            | 1399.99 |       1329.99 |       25 | Electronics | Mobile       | Apple   | iPhone with advanced camera | [https://example.com/iphone.jpg](https://example.com/iphone.jpg)   |
+| product3   | Samsung Family Hub       | 2499.99 |       1999.99 |       15 | Appliances  | Refrigerator | Samsung | Smart refrigerator          | [https://example.com/samsung.jpg](https://example.com/samsung.jpg) |
+| product4   | Sony WH-1000XM5          |  399.99 |        339.99 |       40 | Electronics | Audio        | Sony    | Noise cancelling headphones | [https://example.com/sony.jpg](https://example.com/sony.jpg)       |
+| product5   | Adidas Workout Tee       |   34.99 |         24.99 |      100 | Clothing    | Sportswear   | Adidas  | Breathable workout t-shirt  | [https://example.com/adidas.jpg](https://example.com/adidas.jpg)   |

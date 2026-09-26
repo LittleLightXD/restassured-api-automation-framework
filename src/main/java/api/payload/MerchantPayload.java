@@ -2,116 +2,19 @@ package api.payload;
 
 public class MerchantPayload {
 
-    private String businessType;
-    private String businessName;
-    private String businessEmail;
-    private String businessPhone;
-    private String gstNumber;
-    private String businessAddress;
-    private String businessCity;
-    private String businessState;
-    private String businessCountry;
-    private String businessZipCode;
     private String firstName;
     private String lastName;
+    private String gender;
     private String email;
     private String phone;
+    private String commission;
+    private Integer productLimit;
     private String password;
-    private String confirmPassword;
-    private CompanyDetails companyDetails;
-    private AddressDetails addressDetails;
-
-
-    public MerchantPayload() {
-    }
-
-    public MerchantPayload(String businessName, String businessEmail, String email, String phone) {
-        this.businessName = businessName;
-        this.businessEmail = businessEmail;
-        this.email = email;
-        this.phone = phone;
-    }
-
-
-    public String getBusinessType() {
-        return businessType;
-    }
-
-    public void setBusinessType(String businessType) {
-        this.businessType = businessType;
-    }
-
-    public String getBusinessName() {
-        return businessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
-
-    public String getBusinessEmail() {
-        return businessEmail;
-    }
-
-    public void setBusinessEmail(String businessEmail) {
-        this.businessEmail = businessEmail;
-    }
-
-    public String getBusinessPhone() {
-        return businessPhone;
-    }
-
-    public void setBusinessPhone(String businessPhone) {
-        this.businessPhone = businessPhone;
-    }
-
-    public String getGstNumber() {
-        return gstNumber;
-    }
-
-    public void setGstNumber(String gstNumber) {
-        this.gstNumber = gstNumber;
-    }
-
-    public String getBusinessAddress() {
-        return businessAddress;
-    }
-
-    public void setBusinessAddress(String businessAddress) {
-        this.businessAddress = businessAddress;
-    }
-
-    public String getBusinessCity() {
-        return businessCity;
-    }
-
-    public void setBusinessCity(String businessCity) {
-        this.businessCity = businessCity;
-    }
-
-    public String getBusinessState() {
-        return businessState;
-    }
-
-    public void setBusinessState(String businessState) {
-        this.businessState = businessState;
-    }
-
-    public String getBusinessCountry() {
-        return businessCountry;
-    }
-
-    public void setBusinessCountry(String businessCountry) {
-        this.businessCountry = businessCountry;
-    }
-
-    public String getBusinessZipCode() {
-        return businessZipCode;
-    }
-
-    public void setBusinessZipCode(String businessZipCode) {
-        this.businessZipCode = businessZipCode;
-    }
+    private String zoneId;
+    private String city;
+    private String state;
+    private String country;
+    private CompanyDetails company;
 
     public String getFirstName() {
         return firstName;
@@ -127,6 +30,14 @@ public class MerchantPayload {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getEmail() {
@@ -145,6 +56,22 @@ public class MerchantPayload {
         this.phone = phone;
     }
 
+    public String getCommission() {
+        return commission;
+    }
+
+    public void setCommission(String commission) {
+        this.commission = commission;
+    }
+
+    public Integer getProductLimit() {
+        return productLimit;
+    }
+
+    public void setProductLimit(Integer productLimit) {
+        this.productLimit = productLimit;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -153,111 +80,140 @@ public class MerchantPayload {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public String getZoneId() {
+        return zoneId;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 
-    public CompanyDetails getCompanyDetails() {
-        return companyDetails;
+    public String getCity() {
+        return city;
     }
 
-    public void setCompanyDetails(CompanyDetails companyDetails) {
-        this.companyDetails = companyDetails;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public AddressDetails getAddressDetails() {
-        return addressDetails;
+    public String getState() {
+        return state;
     }
 
-    public void setAddressDetails(AddressDetails addressDetails) {
-        this.addressDetails = addressDetails;
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public CompanyDetails getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDetails company) {
+        this.company = company;
     }
 
 
     public static class CompanyDetails {
-        private String companyName;
-        private String businessType;
-        private String gst;
 
-        public CompanyDetails() {
+        private String name;
+        private String phone;
+        private String email;
+        private String webAddress;
+        private String gstn;
+        private String registerNumber;
+        private AddressDetails address;
+
+        public String getName() {
+            return name;
         }
 
-        public CompanyDetails(String companyName, String businessType, String gst) {
-            this.companyName = companyName;
-            this.businessType = businessType;
-            this.gst = gst;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public String getCompanyName() {
-            return companyName;
+        public String getPhone() {
+            return phone;
         }
 
-        public void setCompanyName(String companyName) {
-            this.companyName = companyName;
+        public void setPhone(String phone) {
+            this.phone = phone;
         }
 
-        public String getBusinessType() {
-            return businessType;
+        public String getEmail() {
+            return email;
         }
 
-        public void setBusinessType(String businessType) {
-            this.businessType = businessType;
+        public void setEmail(String email) {
+            this.email = email;
         }
 
-        public String getGst() {
-            return gst;
+        public String getWebAddress() {
+            return webAddress;
         }
 
-        public void setGst(String gst) {
-            this.gst = gst;
+        public void setWebAddress(String webAddress) {
+            this.webAddress = webAddress;
+        }
+
+        public String getGstn() {
+            return gstn;
+        }
+
+        public void setGstn(String gstn) {
+            this.gstn = gstn;
+        }
+
+        public String getRegisterNumber() {
+            return registerNumber;
+        }
+
+        public void setRegisterNumber(String registerNumber) {
+            this.registerNumber = registerNumber;
+        }
+
+        public AddressDetails getAddress() {
+            return address;
+        }
+
+        public void setAddress(AddressDetails address) {
+            this.address = address;
         }
     }
 
 
     public static class AddressDetails {
-        private String address;
-        private String city;
-        private String state;
+
+        private String buildingInfo;
+        private String landmark;
         private String country;
-        private String zipCode;
+        private String state;
+        private String city;
+        private String type;
+        private String pincode;
+        private String streetInfo;
 
-        public AddressDetails() {
+        public String getBuildingInfo() {
+            return buildingInfo;
         }
 
-        public AddressDetails(String address, String city, String state, String country, String zipCode) {
-            this.address = address;
-            this.city = city;
-            this.state = state;
-            this.country = country;
-            this.zipCode = zipCode;
+        public void setBuildingInfo(String buildingInfo) {
+            this.buildingInfo = buildingInfo;
         }
 
-        public String getAddress() {
-            return address;
+        public String getLandmark() {
+            return landmark;
         }
 
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
+        public void setLandmark(String landmark) {
+            this.landmark = landmark;
         }
 
         public String getCountry() {
@@ -268,13 +224,44 @@ public class MerchantPayload {
             this.country = country;
         }
 
-        public String getZipCode() {
-            return zipCode;
+        public String getState() {
+            return state;
         }
 
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getPincode() {
+            return pincode;
+        }
+
+        public void setPincode(String pincode) {
+            this.pincode = pincode;
+        }
+
+        public String getStreetInfo() {
+            return streetInfo;
+        }
+
+        public void setStreetInfo(String streetInfo) {
+            this.streetInfo = streetInfo;
         }
     }
 }
-

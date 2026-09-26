@@ -2,7 +2,7 @@ package api.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PaymentCardPayload {
+public class ProfileCardPayload {
 
     @JsonProperty("cardId")
     private String cardId;
@@ -41,9 +41,9 @@ public class PaymentCardPayload {
     private String updatedDateTime;
 
 
-    public PaymentCardPayload() {}
+    public ProfileCardPayload() {}
 
-    public PaymentCardPayload(String cardNumber, String cardholderName, String expiryMonth, String expiryYear, String cvv, String cardType) {
+    public ProfileCardPayload(String cardNumber, String cardholderName, String expiryMonth, String expiryYear, String cvv, String cardType) {
         this.cardNumber = cardNumber;
         this.cardholderName = cardholderName;
         this.expiryMonth = expiryMonth;

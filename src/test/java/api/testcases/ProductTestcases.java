@@ -1,261 +1,222 @@
 package api.testcases;
 
+import api.dataproviders.ProductDataProvider;
 import api.endpoints.ProductEndpoints;
 import api.payload.ProductPayload;
-import api.utils.FakeDataGenerator;
+import api.payload.ProductUpdatePayload;
+import api.utils.TestData;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import api.utils.TestData;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ProductTestcases {
 
 
+    @Test(
+            priority = 1,
+            dataProvider = "productData",
+            dataProviderClass = ProductDataProvider.class,
+            description = "Create products from Excel"
+    )
+    public void createProductTest(
+            String productKey,
+            ProductPayload payload) {
 
+        Response response =
+                ProductEndpoints.createProduct(
+                        TestData.merchantId,
+                        payload,
+                        productKey
+                );
 
-    @Test(priority = 1, description = "Create product with valid data")
-    public void createProductWithValidDataTest() {
+        Assert.assertEquals(
+                response.getStatusCode(),
+                201,
+                productKey + " should be created successfully"
+        );
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Test Product " + System.currentTimeMillis());
-        payload.setDescription("High quality test product");
-        payload.setPrice(299.99);
-        payload.setDiscountPrice(199.99);
-        payload.setQuantity(100);
-        payload.setCategory("ELECTRONICS");
-        payload.setSubcategory("MOBILE_PHONES");
-        payload.setBrand("TestBrand");
-        payload.setMerchantId("merchant-123456");
-
-        Response response = ProductEndpoints.createProduct(TestData.merchantId,payload);
-
-        Assert.assertEquals(response.getStatusCode(), 201);
-        Assert.assertNotNull(response.jsonPath().getString("productId"));
-
+        Assert.assertNotNull(
+                TestData.productIds.get(productKey),
+                productKey + " ID should not be null"
+        );
     }
 
-    @Test(priority = 2, description = "Get product by ID")
-    public void getProductByIdTest() {
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Test Product " + System.currentTimeMillis());
-        payload.setDescription("High quality test product");
-        payload.setPrice(299.99);
-        payload.setQuantity(100);
-        payload.setCategory("ELECTRONICS");
+    @Test(
+            priority = 2,
+            description = "Get products by zone"
+    )
+    public void getProductsByZoneTest() {
 
-        String productId = ProductEndpoints.createProductAndGetId(payload);
-        Response response = ProductEndpoints.getProductById(productId);
+        Response response =
+                ProductEndpoints.getProductsByZone(
+                        TestData.zoneId
+                );
 
-        Assert.assertEquals(response.getStatusCode(), 200);
-        Assert.assertEquals(response.jsonPath().getString("productId"), productId);
-
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Products should be fetched successfully by zone"
+        );
     }
 
-    @Test(priority = 3, description = "Get all products")
-    public void getAllProductsTest() {
 
-        Response response = ProductEndpoints.getAllProducts(1, 10, "productName");
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 4, description = "Get products by merchant")
-    public void getProductsByMerchantTest() {
-
-        Response response = ProductEndpoints.getProductsByMerchant("merchant-123456");
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 5, description = "Update product details")
+    @Test(
+            priority = 3,
+            description = "Update product"
+    )
     public void updateProductTest() {
 
-        ProductPayload createPayload = new ProductPayload();
-        createPayload.setProductName("Test Product " + System.currentTimeMillis());
-        createPayload.setDescription("Initial description");
-        createPayload.setPrice(299.99);
-        createPayload.setQuantity(100);
-        createPayload.setCategory("ELECTRONICS");
+        String productId =
+                TestData.productIds.get("product1");
 
-        String productId = ProductEndpoints.createProductAndGetId(createPayload);
+        ProductUpdatePayload payload =
+                new ProductUpdatePayload();
 
-        ProductPayload updatePayload = new ProductPayload();
-        updatePayload.setProductName("Updated Product Name");
-        updatePayload.setDescription("Updated description");
-        updatePayload.setPrice(249.99);
+        payload.setBrand("Razer");
+        payload.setCategory("Gaming Accessories");
+        payload.setCreatedDateTime("2025-06-01T11:45:00.000Z");
+        payload.setDescription(
+                "High-performance wireless gaming mouse with customizable RGB lighting and 20,000 DPI optical sensor."
+        );
+        payload.setMerchantId(
+                Integer.parseInt(TestData.merchantId)
+        );
+        payload.setName("Razer Viper Ultimate");
+        payload.setOffer(15);
+        payload.setPrice(1499.99);
+        payload.setProductId(
+                Integer.parseInt(productId)
+        );
 
-        Response response = ProductEndpoints.updateProduct(productId, updatePayload);
+        payload.setProductImageURLs(
+                Collections.singletonList(
+                        "https://assets2.razerzone.com/images/pnx.assets/91d6b6a2b9ebc7c8f4f5d38e1c7ac21a/razer-viper-ultimate-gallery-1.jpg"
+                )
+        );
 
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 6, description = "Search products")
-    public void searchProductsTest() {
-
-        Response response = ProductEndpoints.searchProducts("Electronics");
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 7, description = "Filter products by category")
-    public void filterProductsByCategoryTest() {
-
-        Response response = ProductEndpoints.filterProductsByCategory("ELECTRONICS");
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 8, description = "Filter products by price range")
-    public void filterProductsByPriceTest() {
-
-        Response response = ProductEndpoints.filterProductsByPrice(100.0, 500.0);
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 9, description = "Get in-stock products")
-    public void getInStockProductsTest() {
-
-        Response response = ProductEndpoints.getInStockProducts();
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-
-
-    @Test(priority = 10, dataProvider = "validProductData",
-            description = "Create product with data provider")
-    public void createProductDataDrivenTest(String productName, Double price, Integer quantity, String category) {
-
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName(productName);
-        payload.setPrice(price);
-        payload.setQuantity(quantity);
-        payload.setCategory(category);
-
-        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
-
-        Assert.assertEquals(response.getStatusCode(), 201);
-
-    }
-
-
-
-    @Test(priority = 20, description = "Create product with missing product name")
-    public void createProductWithMissingNameTest() {
-
-        ProductPayload payload = new ProductPayload();
-        payload.setDescription("Product without name");
-        payload.setPrice(299.99);
         payload.setQuantity(100);
-        payload.setCategory("ELECTRONICS");
+        payload.setRating(4.7);
+        payload.setReviews(Collections.emptyList());
 
-        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
+        payload.setSearchTags(
+                Arrays.asList(
+                        "razer",
+                        "gaming",
+                        "mouse",
+                        "accessory",
+                        "RGB"
+                )
+        );
 
-        Assert.assertEquals(response.getStatusCode(), 400);
+        payload.setStatus("ACTIVE");
 
+        payload.setThumbnailURL(
+                "https://assets2.razerzone.com/images/pnx.assets/91d6b6a2b9ebc7c8f4f5d38e1c7ac21a/razer-viper-ultimate-gallery-1.jpg"
+        );
+
+        payload.setTitle(
+                "Razer Viper Ultimate Wireless Mouse"
+        );
+
+        payload.setType("Electronics");
+        payload.setZoneId(TestData.zoneId);
+
+        Response response =
+                ProductEndpoints.updateProduct(
+                        productId,
+                        payload
+                );
+
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Product should be updated successfully"
+        );
     }
 
-    @Test(priority = 21, description = "Create product with invalid price")
-    public void createProductWithInvalidPriceTest() {
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Test Product " + System.currentTimeMillis());
-        payload.setPrice(-50.0);
-        payload.setQuantity(100);
-        payload.setCategory("ELECTRONICS");
+    @Test(
+            priority = 4,
+            description = "Get product by ID"
+    )
+    public void getProductByIdTest() {
 
-        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
+        String productId =
+                TestData.productIds.get("product1");
 
-        Assert.assertEquals(response.getStatusCode(), 400);
+        Response response =
+                ProductEndpoints.getProductById(productId);
+
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Product should be fetched successfully"
+        );
+
+        Assert.assertEquals(
+                response.jsonPath().getString("data.productId"),
+                productId,
+                "Product ID should match"
+        );
     }
 
-    @Test(priority = 22, description = "Create product with invalid quantity")
-    public void createProductWithInvalidQuantityTest() {
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Test Product " + System.currentTimeMillis());
-        payload.setPrice(299.99);
-        payload.setQuantity(-10);
-        payload.setCategory("ELECTRONICS");
+    @Test(
+            priority = 5,
+            description = "Get products by merchant"
+    )
+    public void getProductsByMerchantTest() {
 
-        Response response = ProductEndpoints.createProduct(TestData.merchantId, payload);
+        Response response =
+                ProductEndpoints.getProductsByMerchant(
+                        TestData.merchantId
+                );
 
-        Assert.assertEquals(response.getStatusCode(), 400);
-
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Merchant products should be fetched successfully"
+        );
     }
 
-    @Test(priority = 23, description = "Get product with invalid ID")
-    public void getProductWithInvalidIdTest() {
 
-        Response response = ProductEndpoints.getProductById("invalid-product-id");
+    @Test(
+            priority = 6,
+            description = "Get all alpha products"
+    )
+    public void getAllAlphaProductsTest() {
 
-        Assert.assertEquals(response.getStatusCode(), 404);
+        Response response =
+                ProductEndpoints.getAllProducts();
 
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Alpha products should be fetched successfully"
+        );
     }
 
-    @Test(priority = 24, description = "Update product that does not exist")
-    public void updateNonExistentProductTest() {
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Updated Product");
-        payload.setPrice(199.99);
-
-        Response response = ProductEndpoints.updateProduct("non-existent-id", payload);
-
-        Assert.assertEquals(response.getStatusCode(), 404);
-
-    }
-
-    @Test(priority = 25, description = "Delete product")
+    @Test(
+            priority = 7,
+            description = "Delete product"
+    )
     public void deleteProductTest() {
 
-        ProductPayload payload = new ProductPayload();
-        payload.setProductName("Test Product " + System.currentTimeMillis());
-        payload.setPrice(299.99);
-        payload.setQuantity(100);
-        payload.setCategory("ELECTRONICS");
+        String productId =
+                TestData.productIds.get("product1");
 
-        String productId = ProductEndpoints.createProductAndGetId(payload);
-        Response response = ProductEndpoints.deleteProduct(productId);
+        Response response =
+                ProductEndpoints.deleteProduct(productId);
 
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 26, description = "Filter products by brand")
-    public void filterProductsByBrandTest() {
-
-        Response response = ProductEndpoints.filterProductsByBrand("Samsung");
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 27, description = "Filter products by rating")
-    public void filterProductsByRatingTest() {
-
-        Response response = ProductEndpoints.filterProductsByRating(4.0);
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
-    }
-
-    @Test(priority = 28, description = "Get out of stock products")
-    public void getOutOfStockProductsTest() {
-
-        Response response = ProductEndpoints.getOutOfStockProducts();
-
-        Assert.assertEquals(response.getStatusCode(), 200);
-
+        Assert.assertEquals(
+                response.getStatusCode(),
+                200,
+                "Product should be deleted successfully"
+        );
     }
 }
-

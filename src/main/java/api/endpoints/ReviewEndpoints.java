@@ -1,6 +1,7 @@
 package api.endpoints;
 
-import api.payload.ReviewPayload;
+import api.payload.*;
+import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
 import io.restassured.response.Response;
 

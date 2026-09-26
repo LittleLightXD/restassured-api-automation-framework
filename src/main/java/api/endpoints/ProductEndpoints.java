@@ -1,7 +1,9 @@
 package api.endpoints;
 
-import api.payload.ProductPayload;
+import api.payload.*;
+import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
+import api.utils.TestData;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -9,8 +11,8 @@ import static io.restassured.RestAssured.given;
 public class ProductEndpoints {
 
 
-    public static Response createProduct(String merchantId, ProductPayload payload) {
-        return given()
+    public static Response createProduct(String merchantId, ProductPayload payload, String productKey) {
+        Response response = given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
                 .queryParam("merchantId", merchantId)
                 .body(payload)
@@ -19,11 +21,12 @@ public class ProductEndpoints {
                 .then()
                 .extract()
                 .response();
+
+                 if (response.getStatusCode() == 201) {
+                    TestData.productIds.put(productKey,response.jsonPath().getString("data.productId")
+        );
     }
-
-
-    public static String createProductAndGetId(ProductPayload payload) {
-        throw new UnsupportedOperationException("A merchant id is required by the Postman collection.");
+        return response;
     }
 
 
@@ -63,17 +66,6 @@ public class ProductEndpoints {
     }
 
 
-    public static Response getAllProductsAlphabetically() {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .get(Routes.ALL_PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
     public static Response updateProduct(String productId, ProductPayload payload) {
         return given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
@@ -97,88 +89,4 @@ public class ProductEndpoints {
                 .response();
     }
 
-
-    public static Response searchProducts(String searchTerm) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("searchTerm", searchTerm)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response filterProductsByCategory(String category) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("category", category)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response filterProductsByPrice(Double minPrice, Double maxPrice) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("minPrice", minPrice)
-                .queryParam("maxPrice", maxPrice)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response filterProductsByBrand(String brand) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("brand", brand)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response filterProductsByRating(Double minRating) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("minRating", minRating)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response getInStockProducts() {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("inStock", true)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response getOutOfStockProducts() {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("inStock", false)
-                .when()
-                .get(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
-    }
 }

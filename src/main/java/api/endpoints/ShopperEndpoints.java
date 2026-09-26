@@ -1,7 +1,10 @@
 package api.endpoints;
 
+import api.payload.*;
 import api.payload.ShopperPayload;
+import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
+import api.utils.TestData;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -10,7 +13,7 @@ public class ShopperEndpoints {
 
 
     public static Response createShopper(ShopperPayload payload) {
-        return given()
+        Response response = given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
                 .body(payload)
                 .when()
@@ -18,191 +21,143 @@ public class ShopperEndpoints {
                 .then()
                 .extract()
                 .response();
-    }
 
-
-    public static String createShopperAndGetId(ShopperPayload payload) {
-        Response response = createShopper(payload);
-        return response.jsonPath().getString("shopperId");
+                if (response.getStatusCode() == 201) {
+                String userId = response.jsonPath().getString("data.userId");
+                TestData.shopperId = userId;
+        }
+        return response; 
     }
 
 
     public static Response getShopperById(String shopperId) {
         return given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
+                .pathParam("shopperId", shopperId)
                 .when()
-                .get(Routes.GET_SHOPPER.replace("{shopperId}", shopperId))
+                .get(Routes.GET_SHOPPER)
                 .then()
                 .extract()
                 .response();
     }
 
+    public static Response forgotPassword(String email) {
 
-    public static Response updateShopper(String shopperId, ShopperPayload payload) {
         return given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
-                .body(payload)
+                .header("role", "SHOPPER")
+                .header("email", email)
                 .when()
-                .put(Routes.UPDATE_SHOPPER.replace("{shopperId}", shopperId))
+                .post(Routes.FORGOT_PASSWORD)
                 .then()
                 .extract()
                 .response();
-    }
+        }
 
+    public static Response loginShopper(LoginShopperPayload loginPayload) {
 
-    public static Response deleteShopper(String shopperId) {
+        Response response = given()
+            .spec(ReusableRequestSpec.buildRequestSpec())
+            .body(loginPayload)
+            .when()
+            .post(Routes.LOGIN)
+            .then()
+            .extract()
+            .response();
+
+        if (response.getStatusCode() == 200) {
+                String token =response.jsonPath().getString("data.jwtToken");
+                TestData.shopperToken = token;
+                }
+        return response;
+        }
+
+    public static Response verifyAccount(String token, String password) {
+
         return given()
                 .spec(ReusableRequestSpec.buildRequestSpec())
+                .queryParam("token", token)
+                .header("password", password)
+                .header("Authorization", "Bearer " + TestData.shopperToken)
                 .when()
-                .delete(Routes.UPDATE_SHOPPER.replace("{shopperId}", shopperId))
+                .post(Routes.VERIFY_ACCOUNT)
                 .then()
                 .extract()
                 .response();
-    }
+        }
 
 
     public static Response addShopperAddress(String shopperId, ShopperPayload.AddressDetails addressDetails) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+        Response response = given()
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .pathParam("shopperId", shopperId)
                 .body(addressDetails)
                 .when()
-                .post(Routes.POST_SHOPPER_ADDRESS.replace("{shopperId}", shopperId))
+                .post(Routes.POST_SHOPPER_ADDRESS)
                 .then()
                 .extract()
                 .response();
-    }
+
+                if (response.getStatusCode() == 200) {
+                String addressId =response.jsonPath().getString("data.addressId");
+                TestData.addressId = addressId;
+                }
+        return response;
+        }
+
 
 
     public static Response getShopperAddress(String shopperId, String addressId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .pathParam("shopperId", shopperId)
+                .pathParam("addressId", addressId)
                 .when()
-                .get(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
-                        .replace("{addressId}", addressId))
+                .get(Routes.GET_SHOPPER_ADDRESS)
                 .then()
                 .extract()
                 .response();
     }
 
 
-    public static Response updateShopperAddress(String shopperId, String addressId, ShopperPayload.AddressDetails addressDetails) {
+    public static Response updateShopperAddress(
+        String shopperId,
+        String addressId,
+        ShopperPayload.AddressDetails addressDetails) {
+
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .body(addressDetails)
-                .when()
-                .put(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
-                        .replace("{addressId}", addressId))
-                .then()
-                .extract()
-                .response();
-    }
-
+            .spec(ReusableRequestSpec.buildShopperRequestSpec())
+            .pathParam("shopperId", shopperId)
+            .pathParam("addressId", addressId)
+            .body(addressDetails)
+            .when()
+            .put(Routes.GET_SHOPPER_ADDRESS)
+            .then()
+            .extract()
+            .response();
+        }
 
     public static Response deleteShopperAddress(String shopperId, String addressId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .pathParam("shopperId", shopperId)
+                .pathParam("addressId", addressId)
                 .when()
-                .delete(Routes.GET_SHOPPER_ADDRESS.replace("{shopperId}", shopperId)
-                        .replace("{addressId}", addressId))
+                .delete(Routes.GET_SHOPPER_ADDRESS)
                 .then()
                 .extract()
                 .response();
     }
 
+    public static Response getAllAddresses(String shopperId) {
 
-    public static Response addBankAccount(ShopperPayload.BankAccountDetails bankDetails) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .body(bankDetails)
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
+                .pathParam("shopperId", shopperId)
                 .when()
-                .post(Routes.POST_SHOPPER_BANK_ACCOUNT)
+                .get(Routes.GET_ALL_ADDRESSES)
                 .then()
                 .extract()
                 .response();
-    }
-
-
-    public static Response addToWishlist(String shopperId, String productId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("productId", productId)
-                .when()
-                .post(Routes.POST_SHOPPER_WISHLIST.replace("{shopperId}", shopperId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response getWishlist(String shopperId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .get(Routes.GET_SHOPPER_WISHLIST.replace("{shopperId}", shopperId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response removeFromWishlist(String shopperId, String productId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .delete(Routes.DELETE_SHOPPER_WISHLIST.replace("{shopperId}", shopperId)
-                        .replace("{productId}", productId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response addToCart(String shopperId, String productId, Integer quantity) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("productId", productId)
-                .queryParam("quantity", quantity)
-                .when()
-                .post(Routes.POST_SHOPPER_CART.replace("{shopperId}", shopperId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response getCart(String shopperId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .get(Routes.GET_SHOPPER_CART.replace("{shopperId}", shopperId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response updateCartItem(String shopperId, String productId, Integer quantity) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("quantity", quantity)
-                .when()
-                .put(Routes.UPDATE_SHOPPER_CART.replace("{shopperId}", shopperId)
-                        .replace("{productId}", productId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response removeFromCart(String shopperId, String itemId) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .delete(Routes.DELETE_SHOPPER_CART.replace("{shopperId}", shopperId)
-                        .replace("{itemId}", itemId))
-                .then()
-                .extract()
-                .response();
-    }
+        }
 }
-

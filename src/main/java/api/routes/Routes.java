@@ -1,4 +1,4 @@
-package api.endpoints;
+package api.routes;
 
 public class Routes {
 
@@ -39,6 +39,7 @@ public class Routes {
 
     public static final String POST_SHOPPER_ADDRESS = GET_SHOPPER + "/address";
     public static final String GET_SHOPPER_ADDRESS = POST_SHOPPER_ADDRESS + "/{addressId}";
+    public static final String GET_ALL_ADDRESSES = "/shoppers/{shopperId}/address";
 
 
     public static final String POST_SHOPPER_BANK_ACCOUNT = "/bankaccounts";

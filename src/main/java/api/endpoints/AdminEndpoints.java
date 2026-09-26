@@ -1,6 +1,7 @@
 package api.endpoints;
 
 import api.payload.*;
+import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
@@ -19,6 +20,11 @@ public class AdminEndpoints {
                 .then()
                 .extract()
                 .response();
+
+            if (response.getStatusCode() == 201) {
+            String userId = response.jsonPath().getString("data.userId");
+            TestData.adminId = userId;
+        }
 
         return response;
     }
@@ -79,9 +85,7 @@ public class AdminEndpoints {
 
         if (response.getStatusCode() == 200) {
             String token = response.jsonPath().getString("data.jwtToken");
-            String userId = response.jsonPath().getString("data.userId");
             TestData.adminToken = token;
-            TestData.adminId = userId;
         }
 
         return response;
