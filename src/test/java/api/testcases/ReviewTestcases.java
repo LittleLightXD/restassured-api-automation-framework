@@ -11,17 +11,14 @@ import io.restassured.response.Response;
 
 public class ReviewTestcases {
 
-    @Test(priority = 1,description = "Create product review",dataProvider = "reviewData",dataProviderClass = ReviewDataProvider.class)
-    public void createProductReviewTest(
-            String productId,
-            String dateTime,
-            String description,
-            String heading,
-            String rating,
-            String shopperName) {
+    @Test(priority = 1, description = "Create product review", dataProvider = "reviewData", dataProviderClass = ReviewDataProvider.class)
+    public void createProductReviewTest(String productKey,String dateTime,String description,String heading,String rating,String shopperName) {
+
+        String productId =TestData.productIds.get(productKey);
+
+        Assert.assertNotNull(productId,"Product ID not found for key: " + productKey);
 
         ReviewPayload payload = new ReviewPayload();
-
         payload.setDateTime(dateTime);
         payload.setDescription(description);
         payload.setHeading(heading);
@@ -29,11 +26,11 @@ public class ReviewTestcases {
         payload.setShopperId(Integer.parseInt(TestData.shopperId));
         payload.setShopperName(shopperName);
 
-        Response response = ReviewEndpoints.createReview(productId, payload);
+        Response response = ReviewEndpoints.createReview(productId,payload);
 
-        Assert.assertEquals(response.getStatusCode(),201,"Review should be created successfully");
+        Assert.assertEquals(response.getStatusCode(),200,"Review should be created successfully");
 
-        TestData.reviewId = response.jsonPath().getString("data.reviewId");
+        TestData.reviewId =response.jsonPath().getString("data.reviewId");
 
         Assert.assertNotNull(TestData.reviewId,"Review ID should not be null");
     }

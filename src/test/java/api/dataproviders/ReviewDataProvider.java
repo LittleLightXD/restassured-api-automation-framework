@@ -11,6 +11,9 @@ public class ReviewDataProvider {
         String filePath = "src/test/resources/ReviewData.xlsx";
         String sheetName = "CreateReview";
 
-        return ExcelReader.getExcelData(filePath, sheetName);
+        return ExcelReader.getExcelData(
+                filePath,
+                sheetName
+        );
     }
 }
