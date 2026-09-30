@@ -1,212 +1,35 @@
 package api.payload;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 public class ProductPayload {
 
-    @JsonProperty("productId")
-    private String productId;
-
-    @JsonProperty("productName")
-    private String productName;
-
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("price")
-    private Double price;
-
-    @JsonProperty("discountPrice")
-    private Double discountPrice;
-
-    @JsonProperty("quantity")
-    private Integer quantity;
-
-    @JsonProperty("productImage")
-    private String productImage;
-
-    @JsonProperty("category")
-    private String category;
-
-    @JsonProperty("subcategory")
-    private String subcategory;
-
-    @JsonProperty("brand")
     private String brand;
-
-    @JsonProperty("merchantId")
-    private String merchantId;
-
-    @JsonProperty("rating")
-    private Double rating;
-
-    @JsonProperty("reviewCount")
-    private Integer reviewCount;
-
-    @JsonProperty("inStock")
-    private Boolean inStock;
-
-    @JsonProperty("createdDateTime")
+    private String category;
     private String createdDateTime;
+    private String description;
+    private Integer merchantId;
+    private String name;
+    private Integer offer;
+    private Double price;
+    private Integer productId;
+    private List<String> productImageURLs;
+    private Integer quantity;
+    private Double rating;
+    private List<String> reviews;
+    private List<String> searchTags;
+    private String status;
+    private String thumbnailURL;
+    private String title;
+    private String type;
+    private String zoneId;
 
-    @JsonProperty("updatedDateTime")
-    private String updatedDateTime;
-
-
-    public static class CategoryDetails {
-        @JsonProperty("categoryId")
-        private String categoryId;
-
-        @JsonProperty("categoryName")
-        private String categoryName;
-
-        @JsonProperty("categoryImage")
-        private String categoryImage;
-
-
-        public CategoryDetails() {}
-
-        public CategoryDetails(String categoryName, String categoryImage) {
-            this.categoryName = categoryName;
-            this.categoryImage = categoryImage;
-        }
-
-
-        public String getCategoryId() {
-            return categoryId;
-        }
-
-        public void setCategoryId(String categoryId) {
-            this.categoryId = categoryId;
-        }
-
-        public String getCategoryName() {
-            return categoryName;
-        }
-
-        public void setCategoryName(String categoryName) {
-            this.categoryName = categoryName;
-        }
-
-        public String getCategoryImage() {
-            return categoryImage;
-        }
-
-        public void setCategoryImage(String categoryImage) {
-            this.categoryImage = categoryImage;
-        }
+    public String getBrand() {
+        return brand;
     }
 
-
-    public static class BrandDetails {
-        @JsonProperty("brandId")
-        private String brandId;
-
-        @JsonProperty("brandName")
-        private String brandName;
-
-        @JsonProperty("brandImage")
-        private String brandImage;
-
-
-        public BrandDetails() {}
-
-        public BrandDetails(String brandName, String brandImage) {
-            this.brandName = brandName;
-            this.brandImage = brandImage;
-        }
-
-
-        public String getBrandId() {
-            return brandId;
-        }
-
-        public void setBrandId(String brandId) {
-            this.brandId = brandId;
-        }
-
-        public String getBrandName() {
-            return brandName;
-        }
-
-        public void setBrandName(String brandName) {
-            this.brandName = brandName;
-        }
-
-        public String getBrandImage() {
-            return brandImage;
-        }
-
-        public void setBrandImage(String brandImage) {
-            this.brandImage = brandImage;
-        }
-    }
-
-
-    public ProductPayload() {}
-
-    public ProductPayload(String productName, Double price, Integer quantity, String category) {
-        this.productName = productName;
-        this.price = price;
-        this.quantity = quantity;
-        this.category = category;
-    }
-
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getDiscountPrice() {
-        return discountPrice;
-    }
-
-    public void setDiscountPrice(Double discountPrice) {
-        this.discountPrice = discountPrice;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getProductImage() {
-        return productImage;
-    }
-
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getCategory() {
@@ -217,28 +40,76 @@ public class ProductPayload {
         this.category = category;
     }
 
-    public String getSubcategory() {
-        return subcategory;
+    public String getCreatedDateTime() {
+        return createdDateTime;
     }
 
-    public void setSubcategory(String subcategory) {
-        this.subcategory = subcategory;
+    public void setCreatedDateTime(String createdDateTime) {
+        this.createdDateTime = createdDateTime;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getDescription() {
+        return description;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getMerchantId() {
+    public Integer getMerchantId() {
         return merchantId;
     }
 
-    public void setMerchantId(String merchantId) {
+    public void setMerchantId(Integer merchantId) {
         this.merchantId = merchantId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getOffer() {
+        return offer;
+    }
+
+    public void setOffer(Integer offer) {
+        this.offer = offer;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public List<String> getProductImageURLs() {
+        return productImageURLs;
+    }
+
+    public void setProductImageURLs(List<String> productImageURLs) {
+        this.productImageURLs = productImageURLs;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Double getRating() {
@@ -249,36 +120,59 @@ public class ProductPayload {
         this.rating = rating;
     }
 
-    public Integer getReviewCount() {
-        return reviewCount;
+    public List<String> getReviews() {
+        return reviews;
     }
 
-    public void setReviewCount(Integer reviewCount) {
-        this.reviewCount = reviewCount;
+    public void setReviews(List<String> reviews) {
+        this.reviews = reviews;
     }
 
-    public Boolean getInStock() {
-        return inStock;
+    public List<String> getSearchTags() {
+        return searchTags;
     }
 
-    public void setInStock(Boolean inStock) {
-        this.inStock = inStock;
+    public void setSearchTags(List<String> searchTags) {
+        this.searchTags = searchTags;
     }
 
-    public String getCreatedDateTime() {
-        return createdDateTime;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCreatedDateTime(String createdDateTime) {
-        this.createdDateTime = createdDateTime;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getUpdatedDateTime() {
-        return updatedDateTime;
+    public String getThumbnailURL() {
+        return thumbnailURL;
     }
 
-    public void setUpdatedDateTime(String updatedDateTime) {
-        this.updatedDateTime = updatedDateTime;
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 }
-

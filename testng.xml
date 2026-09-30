@@ -2,7 +2,7 @@
 
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="ShopperStack Test Suite" parallel="methods" thread-count="1">
+<suite name="ShopperStack Test Suite" parallel="false" thread-count="1">
 
     <listeners>
         <listener class-name="api.listeners.TestListener"/>
@@ -15,8 +15,9 @@
             <class name="api.testcases.MerchantTestcases"/>
             <class name="api.testcases.ProductTestcases"/>
             <class name="api.testcases.ShopperTestcases"/>
-            <class name="api.testcases.OrderTestcases"/>
+            <class name="api.testcases.CartOrderTestcases"/>
             <class name="api.testcases.ReviewTestcases"/>
+
         </classes>
 
     </test>

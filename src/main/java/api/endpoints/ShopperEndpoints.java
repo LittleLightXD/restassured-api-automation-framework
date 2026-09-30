@@ -1,7 +1,6 @@
 package api.endpoints;
 
 import api.payload.*;
-import api.payload.ShopperPayload;
 import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
 import api.utils.TestData;
@@ -32,7 +31,7 @@ public class ShopperEndpoints {
 
     public static Response getShopperById(String shopperId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildShopperRequestSpec())
                 .pathParam("shopperId", shopperId)
                 .when()
                 .get(Routes.GET_SHOPPER)
@@ -40,19 +39,6 @@ public class ShopperEndpoints {
                 .extract()
                 .response();
     }
-
-    public static Response forgotPassword(String email) {
-
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .header("role", "SHOPPER")
-                .header("email", email)
-                .when()
-                .post(Routes.FORGOT_PASSWORD)
-                .then()
-                .extract()
-                .response();
-        }
 
     public static Response loginShopper(LoginShopperPayload loginPayload) {
 
@@ -65,29 +51,10 @@ public class ShopperEndpoints {
             .extract()
             .response();
 
-        if (response.getStatusCode() == 200) {
-                String token =response.jsonPath().getString("data.jwtToken");
-                TestData.shopperToken = token;
-                }
         return response;
         }
 
-    public static Response verifyAccount(String token, String password) {
-
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("token", token)
-                .header("password", password)
-                .header("Authorization", "Bearer " + TestData.shopperToken)
-                .when()
-                .post(Routes.VERIFY_ACCOUNT)
-                .then()
-                .extract()
-                .response();
-        }
-
-
-    public static Response addShopperAddress(String shopperId, ShopperPayload.AddressDetails addressDetails) {
+    public static Response addShopperAddress(String shopperId, ShopperPayload.AddressDetails addressDetails,String addressKey) {
         Response response = given()
                 .spec(ReusableRequestSpec.buildShopperRequestSpec())
                 .pathParam("shopperId", shopperId)
@@ -98,10 +65,6 @@ public class ShopperEndpoints {
                 .extract()
                 .response();
 
-                if (response.getStatusCode() == 200) {
-                String addressId =response.jsonPath().getString("data.addressId");
-                TestData.addressId = addressId;
-                }
         return response;
         }
 
@@ -120,10 +83,8 @@ public class ShopperEndpoints {
     }
 
 
-    public static Response updateShopperAddress(
-        String shopperId,
-        String addressId,
-        ShopperPayload.AddressDetails addressDetails) {
+    public static Response updateShopperAddress(String shopperId,String addressId,ShopperPayload.AddressDetails addressDetails) 
+        {
 
         return given()
             .spec(ReusableRequestSpec.buildShopperRequestSpec())

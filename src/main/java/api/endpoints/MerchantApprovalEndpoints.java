@@ -1,9 +1,7 @@
 package api.endpoints;
 
-import api.payload.*;
 import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
-import api.utils.TestData;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 
@@ -13,6 +11,7 @@ public class MerchantApprovalEndpoints {
     public static Response updateMerchantStatus(String merchantId, String status) {
         Response response = given()
                 .spec(ReusableRequestSpec.buildAdminRequestSpec())
+                .pathParam("merchantId", merchantId)
                 .queryParam("status", status)
                 .when()
                 .patch(Routes.UPDATE_MERCHANT_STATUS)

@@ -1,144 +1,51 @@
 package api.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class OrderPayload {
 
-    @JsonProperty("orderId")
-    private String orderId;
+    @JsonProperty("address")
+    private Address address;
 
-    @JsonProperty("shopperId")
-    private String shopperId;
+    @JsonProperty("orderedItems")
+    private List<OrderedItem> orderedItems;
 
-    @JsonProperty("orderDate")
-    private String orderDate;
+    @JsonProperty("totalPrice")
+    private Double totalPrice;
 
-    @JsonProperty("orderStatus")
-    private String orderStatus;
+    @JsonProperty("actualPrice")
+    private Double actualPrice;
 
-    @JsonProperty("totalAmount")
-    private Double totalAmount;
+    @JsonProperty("discountPrice")
+    private Double discountPrice;
 
-    @JsonProperty("discountAmount")
-    private Double discountAmount;
-
-    @JsonProperty("taxAmount")
-    private Double taxAmount;
-
-    @JsonProperty("shippingCost")
-    private Double shippingCost;
-
-    @JsonProperty("paymentMethod")
-    private String paymentMethod;
-
-    @JsonProperty("paymentStatus")
-    private String paymentStatus;
-
-    @JsonProperty("deliveryAddress")
-    private String deliveryAddress;
-
-    @JsonProperty("deliveryDate")
-    private String deliveryDate;
-
-    @JsonProperty("trackingNumber")
-    private String trackingNumber;
-
-    @JsonProperty("notes")
-    private String notes;
-
-    @JsonProperty("items")
-    private List<OrderItem> items;
-
-    @JsonProperty("createdDateTime")
-    private String createdDateTime;
-
-    @JsonProperty("updatedDateTime")
-    private String updatedDateTime;
+    @JsonProperty("paymentMode")
+    private String paymentMode;
 
 
-    public static class OrderItem {
-        @JsonProperty("productId")
-        private String productId;
+    // ==================== Address ====================
 
-        @JsonProperty("productName")
-        private String productName;
+    public static class Address {
 
-        @JsonProperty("quantity")
-        private Integer quantity;
+        @JsonProperty("addressId")
+        private Integer addressId;
 
-        @JsonProperty("price")
-        private Double price;
+        @JsonProperty("name")
+        private String name;
 
-        @JsonProperty("discount")
-        private Double discount;
+        @JsonProperty("type")
+        private String type;
 
-        @JsonProperty("totalPrice")
-        private Double totalPrice;
+        @JsonProperty("buildingInfo")
+        private String buildingInfo;
 
+        @JsonProperty("streetInfo")
+        private String streetInfo;
 
-        public OrderItem() {}
-
-        public OrderItem(String productId, Integer quantity, Double price) {
-            this.productId = productId;
-            this.quantity = quantity;
-            this.price = price;
-        }
-
-
-        public String getProductId() {
-            return productId;
-        }
-
-        public void setProductId(String productId) {
-            this.productId = productId;
-        }
-
-        public String getProductName() {
-            return productName;
-        }
-
-        public void setProductName(String productName) {
-            this.productName = productName;
-        }
-
-        public Integer getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(Integer quantity) {
-            this.quantity = quantity;
-        }
-
-        public Double getPrice() {
-            return price;
-        }
-
-        public void setPrice(Double price) {
-            this.price = price;
-        }
-
-        public Double getDiscount() {
-            return discount;
-        }
-
-        public void setDiscount(Double discount) {
-            this.discount = discount;
-        }
-
-        public Double getTotalPrice() {
-            return totalPrice;
-        }
-
-        public void setTotalPrice(Double totalPrice) {
-            this.totalPrice = totalPrice;
-        }
-    }
-
-
-    public static class ShippingDetails {
-        @JsonProperty("shippingAddress")
-        private String shippingAddress;
+        @JsonProperty("landmark")
+        private String landmark;
 
         @JsonProperty("city")
         private String city;
@@ -149,31 +56,63 @@ public class OrderPayload {
         @JsonProperty("country")
         private String country;
 
-        @JsonProperty("zipCode")
-        private String zipCode;
+        @JsonProperty("pincode")
+        private String pincode;
 
-        @JsonProperty("shippingMethod")
-        private String shippingMethod;
-
-        @JsonProperty("estimatedDelivery")
-        private String estimatedDelivery;
+        @JsonProperty("phone")
+        private String phone;
 
 
-        public ShippingDetails() {}
-
-        public ShippingDetails(String shippingAddress, String city, String zipCode) {
-            this.shippingAddress = shippingAddress;
-            this.city = city;
-            this.zipCode = zipCode;
+        public Address() {
         }
 
 
-        public String getShippingAddress() {
-            return shippingAddress;
+        public Integer getAddressId() {
+            return addressId;
         }
 
-        public void setShippingAddress(String shippingAddress) {
-            this.shippingAddress = shippingAddress;
+        public void setAddressId(Integer addressId) {
+            this.addressId = addressId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getBuildingInfo() {
+            return buildingInfo;
+        }
+
+        public void setBuildingInfo(String buildingInfo) {
+            this.buildingInfo = buildingInfo;
+        }
+
+        public String getStreetInfo() {
+            return streetInfo;
+        }
+
+        public void setStreetInfo(String streetInfo) {
+            this.streetInfo = streetInfo;
+        }
+
+        public String getLandmark() {
+            return landmark;
+        }
+
+        public void setLandmark(String landmark) {
+            this.landmark = landmark;
         }
 
         public String getCity() {
@@ -200,175 +139,162 @@ public class OrderPayload {
             this.country = country;
         }
 
-        public String getZipCode() {
-            return zipCode;
+        public String getPincode() {
+            return pincode;
         }
 
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
+        public void setPincode(String pincode) {
+            this.pincode = pincode;
         }
 
-        public String getShippingMethod() {
-            return shippingMethod;
+        public String getPhone() {
+            return phone;
         }
 
-        public void setShippingMethod(String shippingMethod) {
-            this.shippingMethod = shippingMethod;
-        }
-
-        public String getEstimatedDelivery() {
-            return estimatedDelivery;
-        }
-
-        public void setEstimatedDelivery(String estimatedDelivery) {
-            this.estimatedDelivery = estimatedDelivery;
+        public void setPhone(String phone) {
+            this.phone = phone;
         }
     }
 
 
-    public OrderPayload() {}
+    // ==================== Ordered Item ====================
 
-    public OrderPayload(String shopperId, Double totalAmount, String paymentMethod) {
-        this.shopperId = shopperId;
-        this.totalAmount = totalAmount;
-        this.paymentMethod = paymentMethod;
+    public static class OrderedItem {
+
+        @JsonProperty("itemId")
+        private Integer itemId;
+
+        @JsonProperty("productId")
+        private Integer productId;
+
+        @JsonProperty("quantity")
+        private Integer quantity;
+
+        @JsonProperty("productName")
+        private String productName;
+
+        @JsonProperty("imageLink")
+        private String imageLink;
+
+        @JsonProperty("price")
+        private Double price;
+
+        @JsonProperty("productLink")
+        private String productLink;
+
+
+        public OrderedItem() {
+        }
+
+        public Integer getitemId() {
+            return itemId;
+        }
+
+        public void setitemId(Integer itemId) {
+            this.itemId = itemId;
+        }
+
+        public Integer getProductId() {
+            return productId;
+        }
+
+        public void setProductId(Integer productId) {
+            this.productId = productId;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(Integer quantity) {
+            this.quantity = quantity;
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public void setProductName(String productName) {
+            this.productName = productName;
+        }
+
+        public String getImageLink() {
+            return imageLink;
+        }
+
+        public void setImageLink(String imageLink) {
+            this.imageLink = imageLink;
+        }
+
+        public Double getPrice() {
+            return price;
+        }
+
+        public void setPrice(Double price) {
+            this.price = price;
+        }
+
+        public String getProductLink() {
+            return productLink;
+        }
+
+        public void setProductLink(String productLink) {
+            this.productLink = productLink;
+        }
     }
 
 
-    public String getOrderId() {
-        return orderId;
+    // ==================== Order Payload ====================
+
+    public OrderPayload() {
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+
+    public Address getAddress() {
+        return address;
     }
 
-    public String getShopperId() {
-        return shopperId;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public void setShopperId(String shopperId) {
-        this.shopperId = shopperId;
+    public List<OrderedItem> getOrderedItems() {
+        return orderedItems;
     }
 
-    public String getOrderDate() {
-        return orderDate;
+    public void setOrderedItems(List<OrderedItem> orderedItems) {
+        this.orderedItems = orderedItems;
     }
 
-    public void setOrderDate(String orderDate) {
-        this.orderDate = orderDate;
+    public Double getTotalPrice() {
+        return totalPrice;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public Double getActualPrice() {
+        return actualPrice;
     }
 
-    public Double getTotalAmount() {
-        return totalAmount;
+    public void setActualPrice(Double actualPrice) {
+        this.actualPrice = actualPrice;
     }
 
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public Double getDiscountPrice() {
+        return discountPrice;
     }
 
-    public Double getDiscountAmount() {
-        return discountAmount;
+    public void setDiscountPrice(Double discountPrice) {
+        this.discountPrice = discountPrice;
     }
 
-    public void setDiscountAmount(Double discountAmount) {
-        this.discountAmount = discountAmount;
+    public String getPaymentMode() {
+        return paymentMode;
     }
 
-    public Double getTaxAmount() {
-        return taxAmount;
-    }
-
-    public void setTaxAmount(Double taxAmount) {
-        this.taxAmount = taxAmount;
-    }
-
-    public Double getShippingCost() {
-        return shippingCost;
-    }
-
-    public void setShippingCost(Double shippingCost) {
-        this.shippingCost = shippingCost;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public String getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(String deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
-    public String getTrackingNumber() {
-        return trackingNumber;
-    }
-
-    public void setTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
-
-    public String getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public void setCreatedDateTime(String createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
-    public String getUpdatedDateTime() {
-        return updatedDateTime;
-    }
-
-    public void setUpdatedDateTime(String updatedDateTime) {
-        this.updatedDateTime = updatedDateTime;
+    public void setPaymentMode(String paymentMode) {
+        this.paymentMode = paymentMode;
     }
 }
-

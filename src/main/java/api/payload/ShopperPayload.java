@@ -43,98 +43,145 @@ public class ShopperPayload {
     @JsonProperty("status")
     private String status;
 
+    @JsonProperty("city")
+    private String city;
 
-    public static class AddressDetails {
-        @JsonProperty("address")
-        private String address;
+    @JsonProperty("country")
+    private String country;
 
-        @JsonProperty("city")
-        private String city;
+    @JsonProperty("state")
+    private String state;
 
-        @JsonProperty("state")
-        private String state;
-
-        @JsonProperty("country")
-        private String country;
-
-        @JsonProperty("zipCode")
-        private String zipCode;
-
-        @JsonProperty("addressType")
-        private String addressType;
-
-        @JsonProperty("isDefault")
-        private Boolean isDefault;
+    @JsonProperty("zoneId")
+    private String zoneId;
 
 
-        public AddressDetails() {}
+public static class AddressDetails {
 
-        public AddressDetails(String address, String city, String state, String country, String zipCode) {
-            this.address = address;
-            this.city = city;
-            this.state = state;
-            this.country = country;
-            this.zipCode = zipCode;
-        }
+    @JsonProperty("city")
+    private String city;
+
+    @JsonProperty("type")
+    private String type;
+
+    @JsonProperty("country")
+    private String country;
+
+    @JsonProperty("buildingInfo")
+    private String buildingInfo;
+
+    @JsonProperty("streetInfo")
+    private String streetInfo;
+
+    @JsonProperty("landmark")
+    private String landmark;
+
+    @JsonProperty("state")
+    private String state;
+
+    @JsonProperty("pincode")
+    private String pincode;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("phone")
+    private String phone;
 
 
-        public String getAddress() {
-            return address;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
-        }
-
-        public String getZipCode() {
-            return zipCode;
-        }
-
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
-        }
-
-        public String getAddressType() {
-            return addressType;
-        }
-
-        public void setAddressType(String addressType) {
-            this.addressType = addressType;
-        }
-
-        public Boolean getIsDefault() {
-            return isDefault;
-        }
-
-        public void setIsDefault(Boolean isDefault) {
-            this.isDefault = isDefault;
-        }
+    public AddressDetails() {
     }
 
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+
+    public String getBuildingInfo() {
+        return buildingInfo;
+    }
+
+    public void setBuildingInfo(String buildingInfo) {
+        this.buildingInfo = buildingInfo;
+    }
+
+
+    public String getStreetInfo() {
+        return streetInfo;
+    }
+
+    public void setStreetInfo(String streetInfo) {
+        this.streetInfo = streetInfo;
+    }
+
+
+    public String getLandmark() {
+        return landmark;
+    }
+
+    public void setLandmark(String landmark) {
+        this.landmark = landmark;
+    }
+
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+}
 
     public static class BankAccountDetails {
         @JsonProperty("accountNumber")
@@ -330,5 +377,38 @@ public class ShopperPayload {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
+    }
+
 }
 

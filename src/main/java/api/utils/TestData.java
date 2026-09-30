@@ -20,20 +20,21 @@ public class TestData {
     public static String merchantReject;
 
     // Shopper
+    public static String shopperEmail;
+    public static String shopperPassword;
+    public static String shopperName;
     public static String shopperId;
     public static String shopperToken;
-    public static String addressId;
+    public static String resetToken;
 
-    // Shopper Bank Account
-
-    // Bank Card
-    public static String cardId;
-    public static String cardNumber;
+    // Shopper Address
+    public static Map<String, String> addressIds = new HashMap<>();
 
     // Product
     public static Map<String, String> productIds = new HashMap<>();
 
     // Order
+    public static String itemId;
     public static String orderId;
 
     // Review

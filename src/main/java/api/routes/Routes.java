@@ -23,6 +23,7 @@ public class Routes {
     public static final String SINGLE_PRODUCT = PRODUCT + "/{productId}";
     public static final String MERCHANT_PRODUCT = PRODUCT + "/merchant/{merchantId}";
     public static final String ALL_PRODUCT = PRODUCT + "/alpha";
+    public static final String ZONE_PRODUCT = PRODUCT + "/zone/{zoneId}";
 
 
     public static final String POST_SHOPPER = "/shoppers";
@@ -57,25 +58,17 @@ public class Routes {
     public static final String GET_ALL_PROFILE_CARDS = "/shoppers/cards";
 
 
-    public static final String POST_SHOPPER_WISHLIST = GET_SHOPPER + "/wishlist";
-    public static final String GET_SHOPPER_WISHLIST = GET_SHOPPER + "/wishlist";
-    public static final String DELETE_SHOPPER_WISHLIST = POST_SHOPPER_WISHLIST + "/{productId}";
-
-
     public static final String POST_SHOPPER_CART = GET_SHOPPER + "/carts";
-    public static final String GET_SHOPPER_CART = GET_SHOPPER + "/carts";
-    public static final String DELETE_SHOPPER_CART = GET_SHOPPER_CART + "/{productId}";
-    public static final String UPDATE_SHOPPER_CART = GET_SHOPPER_CART + "/{itemId}";
 
 
     public static final String POST_ORDER = GET_SHOPPER + "/orders";
     public static final String GET_ORDER = GET_SHOPPER + "/orders";
     public static final String UPDATE_ORDER = GET_ORDER + "/{orderId}";
-    public static final String GET_ORDER_INVOICE = UPDATE_ORDER + "/invoice";
+    public static final String GET_ORDER_INVOICE = "/shoppers" + "/{shopperId}" + "/orders" + "/{orderId}" + "/invoice";
 
 
     public static final String POST_REVIEW = "/reviews";
     public static final String GET_REVIEW = POST_REVIEW + "/{productId}";
-    public static final String UPDATE_REVIEW = POST_REVIEW + "/{reviewId}";
+    public static final String UPDATE_REVIEW = POST_REVIEW + "/{shopperId}";
     public static final String DELETE_REVIEW = POST_REVIEW + "/{reviewId}";
 }

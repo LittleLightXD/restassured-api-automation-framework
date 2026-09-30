@@ -43,6 +43,7 @@ public class Admintestcases {
         Response response = AdminEndpoints.createAdmin(payload);
 
         TestData.adminId = response.jsonPath().getString("data.userId");
+        TestData.zoneId = "BANGALORE" + TestData.adminId;
 
         logger.info("Expected status : 201, Actual status: {}", response.getStatusCode());
         
@@ -60,6 +61,7 @@ public class Admintestcases {
         payload.setRole("ADMIN");
 
         Response response = AdminEndpoints.loginAdmin(payload);
+        TestData.adminToken = response.jsonPath().getString("data.jwtToken");
         
         logger.info("Expected status : 200, Actual status: {}", response.getStatusCode());
 
@@ -222,9 +224,7 @@ public class Admintestcases {
 
         logger.info("Expected status : 409, Actual status: {}", response2.getStatusCode());
 
-        Assert.assertTrue(response2.getStatusCode() == 409 || response2.getStatusCode() == 400,
-                "Duplicate email should be rejected");
-
+        Assert.assertTrue(response2.getStatusCode() == 409 || response2.getStatusCode() == 400,"Duplicate email should be rejected");
     }
 
 }

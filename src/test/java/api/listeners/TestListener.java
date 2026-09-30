@@ -4,10 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.IExecutionListener;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import org.testng.IExecutionListener;
 
 public class TestListener
         implements ITestListener, IExecutionListener {
@@ -29,8 +29,11 @@ public class TestListener
 
         logger.info("TEST STARTED: {}", testName);
 
-        ExtentTestManager.getTest()
-                .info("Test started");
+        ExtentTest currentTest = ExtentTestManager.getTest();
+
+        if (currentTest != null) {
+            currentTest.info("Test started");
+        }
     }
 
     @Override
@@ -40,8 +43,11 @@ public class TestListener
 
         logger.info("TEST PASSED: {}", testName);
 
-        ExtentTestManager.getTest()
-                .pass("Test passed successfully");
+        ExtentTest currentTest = ExtentTestManager.getTest();
+
+        if (currentTest != null) {
+            currentTest.pass("Test passed successfully");
+        }
 
         ExtentTestManager.removeTest();
     }
@@ -60,8 +66,11 @@ public class TestListener
                     result.getThrowable().getMessage()
             );
 
-            ExtentTestManager.getTest()
-                    .fail(result.getThrowable());
+            ExtentTest currentTest = ExtentTestManager.getTest();
+
+            if (currentTest != null) {
+                currentTest.fail(result.getThrowable());
+            }
         }
 
         ExtentTestManager.removeTest();
@@ -74,12 +83,15 @@ public class TestListener
 
         logger.warn("TEST SKIPPED: {}", testName);
 
-        ExtentTestManager.getTest()
-                .skip("Test skipped");
+        ExtentTest currentTest = ExtentTestManager.getTest();
+
+        if (currentTest != null) {
+            currentTest.skip("Test skipped");
+        }
 
         ExtentTestManager.removeTest();
     }
-    
+
     @Override
     public void onExecutionFinish() {
 

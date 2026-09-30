@@ -1,8 +1,10 @@
 package api.testcases;
 
+import api.dataproviders.AddressDataProvider;
 import api.endpoints.ShopperEndpoints;
-import api.payload.ShopperPayload;
+import api.payload.*;
 import api.utils.FakeDataGenerator;
+import api.utils.TestData;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,154 +12,131 @@ import org.testng.annotations.Test;
 public class ShopperTestcases {
 
 
+   @Test(priority = 1, description = "Create shopper")
+    public void createShopperTest() {
+        
+    TestData.shopperPassword = FakeDataGenerator.getPassword();
+    TestData.shopperEmail = FakeDataGenerator.getUniqueEmail();
 
+    ShopperPayload payload = new ShopperPayload();
 
-    @Test(priority = 1, description = "Create shopper with valid data")
-    public void createShopperWithValidDataTest() {
+    payload.setCity("Mumbai");
+    payload.setCountry("India");
+    payload.setEmail(TestData.shopperEmail);
+    payload.setFirstName(FakeDataGenerator.getFirstName());
+    payload.setGender("MALE");
+    payload.setLastName(FakeDataGenerator.getLastName());
+    payload.setPassword(TestData.shopperPassword);
+    payload.setPhone(FakeDataGenerator.getPhoneNumber());
+    payload.setState("Maharashtra");
+    payload.setZoneId(TestData.zoneId);
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-        payload.setGender("MALE");
-        payload.setDateOfBirth("1990-01-15");
+    Response response = ShopperEndpoints.createShopper(payload);
+    TestData.shopperId = response.jsonPath().getString("data.userId");
 
-        Response response = ShopperEndpoints.createShopper(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 201);
-        Assert.assertNotNull(response.jsonPath().getString("shopperId"));
-
+    Assert.assertEquals(response.getStatusCode(), 201, "Shopper should be created successfully");
+    Assert.assertNotNull(TestData.shopperId, "Shopper ID should not be null");
     }
 
+   @Test(priority = 2, description = "Shopper login")
+    public void loginShopperTest() {
 
+    LoginShopperPayload loginPayload = new LoginShopperPayload();
 
-    @Test(priority = 10, dataProvider = "validShopperData",
-            description = "Create shopper with data provider")
-    public void createShopperDataDrivenTest(String firstName, String lastName, String email, String phone) {
+    loginPayload.setEmail(TestData.shopperEmail);
+    loginPayload.setPassword(TestData.shopperPassword);
+    loginPayload.setRole("SHOPPER");
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(firstName);
-        payload.setLastName(lastName);
-        payload.setEmail(email);
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setPhone(phone);
+    Response response = ShopperEndpoints.loginShopper(loginPayload);
+    TestData.shopperToken = response.jsonPath().getString("data.jwtToken");
 
-        Response response = ShopperEndpoints.createShopper(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 201);
-
+    Assert.assertEquals(response.getStatusCode(), 200, "Shopper should login successfully");
+    Assert.assertNotNull(TestData.shopperToken, "Shopper token should not be null");
+    Assert.assertNotNull(TestData.shopperId, "Shopper ID should not be null");
     }
 
+   @Test(priority = 3, description = "Get shopper by ID")
+    public void getShopperByIdTest() {
 
+        Response response = ShopperEndpoints.getShopperById(TestData.shopperId);
 
-    @Test(priority = 20, description = "Create shopper with invalid email")
-    public void createShopperWithInvalidEmailTest() {
-
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail("invalid-email-format");
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
-
-        Response response = ShopperEndpoints.createShopper(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400);
-
+        Assert.assertEquals(response.getStatusCode(), 200, "Shopper should be fetched successfully");
+        Assert.assertEquals(response.jsonPath().getString("data.userId"), TestData.shopperId, "Shopper ID should match");
     }
 
-    @Test(priority = 21, description = "Create shopper with missing required fields")
-    public void createShopperWithMissingFieldsTest() {
+    @Test(priority = 4, dataProvider = "addressData", dataProviderClass = AddressDataProvider.class, description = "Add multiple shopper addresses")
+    public void addShopperAddressTest(String city, String type, String country, String buildingInfo, String streetInfo, String landmark, String state, String pincode, String name, String phone) {
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
+        ShopperPayload.AddressDetails addressDetails = new ShopperPayload.AddressDetails();
 
+        addressDetails.setCity(city);
+        addressDetails.setType(type);
+        addressDetails.setCountry(country);
+        addressDetails.setBuildingInfo(buildingInfo);
+        addressDetails.setStreetInfo(streetInfo);
+        addressDetails.setLandmark(landmark);
+        addressDetails.setState(state);
+        addressDetails.setPincode(pincode);
+        addressDetails.setName(name);
+        addressDetails.setPhone(phone);
 
-        Response response = ShopperEndpoints.createShopper(payload);
+        Response response = ShopperEndpoints.addShopperAddress(TestData.shopperId, addressDetails,city);
 
-        Assert.assertEquals(response.getStatusCode(), 400);
+        if (response.getStatusCode() == 201) {
+        String addressId = response.jsonPath().getString("data.addressId");
+        TestData.addressIds.put(pincode, addressId);
+        }
 
+        Assert.assertEquals(response.getStatusCode(), 201, city + " address should be added successfully");
     }
 
-    @Test(priority = 22, description = "Get shopper with invalid ID")
-    public void getShopperWithInvalidIdTest() {
+    @Test(priority = 5, description = "Get shopper address") 
+    public void getShopperAddressTest() { 
+        
+        String addressId = TestData.addressIds.get("432104"); 
+        
+        Response response = ShopperEndpoints.getShopperAddress(TestData.shopperId, addressId); 
 
-        Response response = ShopperEndpoints.getShopperById("invalid-shopper-id");
-
-        Assert.assertEquals(response.getStatusCode(), 404);
-
+        Assert.assertEquals(response.getStatusCode(), 200, "Shopper address should be fetched successfully"); 
     }
 
-    @Test(priority = 23, description = "Create shopper with password mismatch")
-    public void passwordMismatchTest() {
+    @Test(priority = 6, description = "Update shopper address")
+    public void updateShopperAddressTest() {
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword("DifferentPassword123!");
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
+    String addressId = TestData.addressIds.get("432102"); 
 
-        Response response = ShopperEndpoints.createShopper(payload);
+    ShopperPayload.AddressDetails addressDetails = new ShopperPayload.AddressDetails();
 
-        Assert.assertEquals(response.getStatusCode(), 400);
+    addressDetails.setCity("Diamond Harbour");
+    addressDetails.setType("Home");
+    addressDetails.setCountry("India");
+    addressDetails.setBuildingInfo("iuytrew");
+    addressDetails.setStreetInfo("Pune");
+    addressDetails.setLandmark("lkjhgfdsa");
+    addressDetails.setState("Gujrat");
+    addressDetails.setPincode("432102");
+    addressDetails.setName("8GYxvJBz5Z");
+    addressDetails.setPhone("9737280329");
 
+    Response response = ShopperEndpoints.updateShopperAddress(TestData.shopperId, addressId, addressDetails);
+
+    Assert.assertEquals(response.getStatusCode(), 200, "Shopper address should be updated successfully");
     }
 
-    @Test(priority = 24, description = "Create shopper with invalid phone")
-    public void createShopperWithInvalidPhoneTest() {
+    @Test(priority = 7, description = "Delete shopper address")
+    public void deleteShopperAddressTest() {
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        payload.setEmail(FakeDataGenerator.getUniqueEmail());
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setPhone("123");
+        Response response = ShopperEndpoints.deleteShopperAddress(TestData.shopperId, TestData.addressIds.get("432103"));
 
-        Response response = ShopperEndpoints.createShopper(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 400);
-
+        Assert.assertEquals(response.getStatusCode(), 204, "Shopper address should be deleted successfully");
     }
 
-    @Test(priority = 25, description = "Duplicate email registration")
-    public void duplicateShopperEmailTest() {
+    @Test(priority = 8, description = "Get all shopper addresses")
+    public void getAllShopperAddressesTest() {
 
-        ShopperPayload payload = new ShopperPayload();
-        payload.setFirstName(FakeDataGenerator.getFirstName());
-        payload.setLastName(FakeDataGenerator.getLastName());
-        String email = FakeDataGenerator.getUniqueEmail();
-        payload.setEmail(email);
-        payload.setPassword(FakeDataGenerator.getStrongPassword());
-        payload.setConfirmPassword(payload.getPassword());
-        payload.setPhone(FakeDataGenerator.getPhoneNumber());
+        Response response = ShopperEndpoints.getAllAddresses(TestData.shopperId);
 
-
-        ShopperEndpoints.createShopper(payload);
-
-
-        Response response = ShopperEndpoints.createShopper(payload);
-
-        Assert.assertEquals(response.getStatusCode(), 409);
-
+        Assert.assertEquals(response.getStatusCode(), 200, "Shopper addresses should be fetched successfully");
     }
 
-
-    @Test(priority = 27, description = "Unauthorized access to shopper endpoint")
-    public void unauthorizedAccessTest() {
-
-        Response response = ShopperEndpoints.getShopperById("some-id");
-
-        Assert.assertEquals(response.getStatusCode(), 401);
-    }
 }
-

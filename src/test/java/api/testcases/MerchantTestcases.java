@@ -9,7 +9,6 @@ import api.endpoints.MerchantApprovalEndpoints;
 import api.endpoints.MerchantEndpoints;
 import api.payload.LoginMerchantPayload;
 import api.payload.MerchantPayload;
-import api.specs.ReusableRequestSpec;
 import api.utils.FakeDataGenerator;
 import api.utils.TestData;
 import io.restassured.response.Response;
@@ -33,7 +32,7 @@ public class MerchantTestcases {
         payload.setCommission("30");
         payload.setProductLimit(10);
         payload.setPassword(TestData.merchantPassword);
-        payload.setZoneId("BANGALORE" + TestData.adminId);
+        payload.setZoneId(TestData.zoneId);
         payload.setCity("Bardhaman");
         payload.setState("West Bengal");
         payload.setCountry("India");
@@ -81,7 +80,7 @@ public class MerchantTestcases {
         loginPayload.setRole("MERCHANT");
 
         Response response = MerchantEndpoints.loginMerchant(loginPayload);
-        TestData.merchantToken = response.jsonPath().getString("data.userId");
+        TestData.merchantToken = response.jsonPath().getString("data.jwtToken");
 
         Assert.assertEquals(response.getStatusCode(),200, "Merchant login should be successful");
 
@@ -104,12 +103,12 @@ public class MerchantTestcases {
         payload.setFirstName(FakeDataGenerator.getFirstName());
         payload.setLastName(FakeDataGenerator.getLastName());
         payload.setGender("male");
-        payload.setEmail(TestData.merchantEmail);
+        payload.setEmail(FakeDataGenerator.getUniqueEmail());
         payload.setPhone(FakeDataGenerator.getPhoneNumber());
         payload.setCommission("30");
         payload.setProductLimit(10);
-        payload.setPassword(TestData.merchantPassword);
-        payload.setZoneId("BANGALORE" + TestData.adminId);
+        payload.setPassword(FakeDataGenerator.getPassword());
+        payload.setZoneId(TestData.zoneId);
         payload.setCity("Bardhaman");
         payload.setState("West Bengal");
         payload.setCountry("India");
@@ -126,11 +125,11 @@ public class MerchantTestcases {
         address.setBuildingInfo("qwerty");
         address.setLandmark("uytrew");
         address.setCountry("India");
-        address.setState("West Bengal");
-        address.setCity("Bardhaman");
+        address.setState("Karnataka");
+        address.setCity("Bengalore");
         address.setType("Books");
-        address.setPincode("713101");
-        address.setStreetInfo("Katwa Bardhaman Road");
+        address.setPincode("560045");
+        address.setStreetInfo("manyata tech park");
 
         company.setAddress(address);
         payload.setCompany(company);
@@ -144,7 +143,7 @@ public class MerchantTestcases {
     @Test(priority = 5, description = "Reject merchant")
     public void blockMerchantTest() {
 
-        Response response =MerchantApprovalEndpoints.updateMerchantStatus(TestData.merchantId,"BLOCKED");
+        Response response =MerchantApprovalEndpoints.updateMerchantStatus(TestData.merchantReject,"BLOCKED");
 
         Assert.assertEquals(response.getStatusCode(),200,"Merchant should be blocked successfully");
     }

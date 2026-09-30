@@ -30,7 +30,7 @@ public class MerchantEndpoints {
 
     public static Response getMerchantById(String merchantId) {
         Response response = given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildMerchantRequestSpec())
                 .pathParam("merchantId", merchantId)
                 .when()
                 .get(Routes.GET_MERCHANT)

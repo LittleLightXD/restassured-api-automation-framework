@@ -3,36 +3,31 @@ package api.endpoints;
 import api.payload.*;
 import api.routes.Routes;
 import api.specs.ReusableRequestSpec;
-import api.utils.TestData;
 import io.restassured.response.Response;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 
 public class ProductEndpoints {
 
 
-    public static Response createProduct(String merchantId, ProductPayload payload, String productKey) {
-        Response response = given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("merchantId", merchantId)
-                .body(payload)
-                .when()
-                .post(Routes.PRODUCT)
-                .then()
-                .extract()
-                .response();
+    public static Response createProducts(String merchantId,List<ProductPayload> payloads) {
 
-                 if (response.getStatusCode() == 201) {
-                    TestData.productIds.put(productKey,response.jsonPath().getString("data.productId")
-        );
-    }
-        return response;
+        return given()
+            .spec(ReusableRequestSpec.buildMerchantRequestSpec())
+            .queryParam("merchantId", merchantId)
+            .body(payloads)
+            .when()
+            .post(Routes.PRODUCT)
+            .then()
+            .extract()
+            .response();
     }
 
 
     public static Response getProductById(String productId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildAdminRequestSpec())
                 .when()
                 .get(Routes.SINGLE_PRODUCT.replace("{productId}", productId))
                 .then()
@@ -40,35 +35,20 @@ public class ProductEndpoints {
                 .response();
     }
 
-
-    public static Response getAllProducts(Integer pageNumber, Integer pageSize, String sortBy) {
+    public static Response getAllProducts() {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .queryParam("pageNumber", pageNumber)
-                .queryParam("pageSize", pageSize)
-                .queryParam("sortBy", sortBy)
+                .spec(ReusableRequestSpec.buildAdminRequestSpec())
                 .when()
-                .get(Routes.PRODUCT)
+                .get(Routes.ALL_PRODUCT)
                 .then()
                 .extract()
                 .response();
     }
 
 
-    public static Response getProductsByMerchant(String merchantId) {
+    public static Response updateProduct(String productId, ProductUpdatePayload payload) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
-                .when()
-                .get(Routes.MERCHANT_PRODUCT.replace("{merchantId}", merchantId))
-                .then()
-                .extract()
-                .response();
-    }
-
-
-    public static Response updateProduct(String productId, ProductPayload payload) {
-        return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildMerchantRequestSpec())
                 .queryParam("productId", productId)
                 .body(payload)
                 .when()
@@ -81,7 +61,7 @@ public class ProductEndpoints {
 
     public static Response deleteProduct(String productId) {
         return given()
-                .spec(ReusableRequestSpec.buildRequestSpec())
+                .spec(ReusableRequestSpec.buildMerchantRequestSpec())
                 .when()
                 .delete(Routes.SINGLE_PRODUCT.replace("{productId}", productId))
                 .then()
